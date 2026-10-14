@@ -9,6 +9,7 @@ Connectors come from TAXAPPEAL_CONNECTORS (default: all mock), e.g.
 from __future__ import annotations
 
 import json
+import os
 import re
 import secrets
 from datetime import date, datetime
@@ -274,8 +275,16 @@ def make_handler(app: App) -> type[BaseHTTPRequestHandler]:
 
 def serve(host: str = "127.0.0.1", port: int = 8000, out_root: Path = Path("out/web")) -> None:
     out_root.mkdir(parents=True, exist_ok=True)
-    app = App(out_root)
-    server = ThreadingHTTPServer((host, port), make_handler(app))
+    try:
+        app = App(out_root)
+    except (FileNotFoundError, ValueError) as e:
+        raise SystemExit(f"Can't start: {e}\n(Connectors in use: TAXAPPEAL_CONNECTORS="
+                         f"{os.environ.get('TAXAPPEAL_CONNECTORS', '') or '<unset, all mock>'})") from None
+    try:
+        server = ThreadingHTTPServer((host, port), make_handler(app))
+    except OSError as e:
+        raise SystemExit(f"Can't start on {host}:{port}: {e.strerror}. "
+                         f"Is another server running? Try --port {port + 1}.") from None
     print(f"Tax appeal UI running at http://{host}:{port}  (Ctrl+C to stop)")
     print("  Data sources: " + "; ".join(f"{k}={s}" for k, s in app.connectors.describe().items()))
     try:

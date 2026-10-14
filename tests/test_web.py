@@ -94,3 +94,13 @@ def test_generate_with_confirmed_trim_for_wrong_property_is_rejected(tmp_path):
                trim_taxable_value=["1"], trim_total_millage=["18"])
     with pytest.raises(ValueError, match="TRIM notice is for folio"):
         App(tmp_path).generate(bad, pdf=False)
+
+
+def test_serve_explains_missing_dor_index(tmp_path, monkeypatch):
+    from taxappeal.web import serve
+
+    monkeypatch.setenv("TAXAPPEAL_CONNECTORS", "property_records=dor,sales=dor")
+    monkeypatch.setenv("TAXAPPEAL_DOR_DB", str(tmp_path / "missing.sqlite"))
+    monkeypatch.setattr("taxappeal.connectors.dor.DEFAULT_DB", tmp_path / "missing.sqlite")
+    with pytest.raises(SystemExit, match="import-dor"):
+        serve(port=0, out_root=tmp_path / "web")
