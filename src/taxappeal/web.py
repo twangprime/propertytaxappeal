@@ -26,7 +26,7 @@ from pydantic import ValidationError
 from .connectors import Connectors, build_connectors, choices_from_env
 from .connectors.mock import mock_folios
 from .models import CaseInput, Packet, TrimNotice
-from .pipeline import generate_packet, write_outputs
+from .pipeline import generate_packet, normalize_folio, write_outputs
 
 _env = Environment(loader=PackageLoader("taxappeal", "templates"), autoescape=True,
                    undefined=StrictUndefined, trim_blocks=True, lstrip_blocks=True)
@@ -202,18 +202,40 @@ class App:
         for key, val in field_map.items():
             filled[key] = ["" if val is None else str(val)]
         filled["trim_folio"] = [extraction.folio or ""]
-        if extraction.folio and not _one(form, "folio"):
+        notice = "We read these values from your notice. Check each one against the notice before building."
+        typed_folio = _one(form, "folio")
+        if extraction.folio:
+            # The notice identifies the property, so its folio replaces whatever was in the box.
             filled["folio"] = [extraction.folio]
+            if typed_folio and normalize_folio(typed_folio) != normalize_folio(extraction.folio):
+                notice += f" The folio was changed from {typed_folio} to {extraction.folio} to match your notice."
         if extraction.tax_year:
             filled["tax_year"] = [str(extraction.tax_year)]
         found = [k for k, val in field_map.items() if val is not None]
         if not found:
             return self.form_page(values=filled, ocr_notes=extraction.notes,
                                   ocr_error="We couldn't find any values on this notice. Please type them below.")
-        notice = "We read these values from your notice. Check each one against the notice before building."
         if extraction.missing():
             notice += f" Some values couldn't be read: {', '.join(extraction.missing())}."
-        return self.form_page(notice=notice, values=filled, ocr_notes=extraction.notes)
+        return self.form_page(notice=notice, values=filled, ocr_notes=extraction.notes,
+                              ocr_error=self.property_problem(_one(filled, "folio")))
+
+    def property_problem(self, folio: str) -> str:
+        """Explain up front when the property isn't in the loaded data, instead of failing at build time."""
+        if not folio:
+            return ""
+        try:
+            self.connectors.property_records.get_property(folio)
+        except LookupError:
+            if self.mock_mode:
+                return (f"Folio {folio} isn't in the mock data, which only has 4 fictional properties, so a "
+                        f"packet can't be built for it yet. To use real properties, load the state roll "
+                        f"(taxappeal import-dor) and restart with "
+                        f"TAXAPPEAL_CONNECTORS=property_records=dor,sales=dor.")
+            return f"Folio {folio} wasn't found in the loaded property roll. Check the folio number."
+        except ValueError as e:
+            return str(e)
+        return ""
 
     def generate(self, form: Form, pdf: bool) -> str:
         case = case_from_form(form)

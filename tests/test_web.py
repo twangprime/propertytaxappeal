@@ -150,3 +150,20 @@ def test_no_values_found_is_reported(tmp_path):
     page = App(tmp_path, trim_reader=LocalTrimReader(BlankEngine())).extract_trim(
         form(), {"trim_file": ("n.png", "image/png", buf.getvalue())})
     assert "couldn&#39;t find any values" in page
+
+
+def test_notice_folio_replaces_typed_folio_and_flags_unknown_property(tmp_path):
+    from pathlib import Path
+
+    pdf = (Path(__file__).resolve().parents[1] / "samples" / "sample_trim_notice_miami_dade.pdf").read_bytes()
+    # Typed folio differs from the notice: the notice wins and the owner is told.
+    page = App(tmp_path).extract_trim(form(folio=["30-5911-003-0780"]), {"trim_file": ("n.pdf", "application/pdf", pdf)})
+    assert 'name="folio" type="text" required list="folio-list" placeholder="e.g. 30-4019-001-0100" value="30-4019-001-0100"' in page
+    assert "changed from 30-5911-003-0780 to 30-4019-001-0100" in page
+    assert "isn&#39;t in the mock data" not in page  # this folio exists in the mock data
+
+
+def test_property_missing_from_mock_data_is_explained(tmp_path):
+    msg = App(tmp_path).property_problem("30-4916-021-0090")
+    assert "isn't in the mock data" in msg and "import-dor" in msg
+    assert App(tmp_path).property_problem("30-4019-001-0100") == ""
