@@ -32,7 +32,8 @@
       <p class="muted" style="font-size:13px;margin-top:0">Upload a PDF or photo and we'll read the values for you, or type them in.{% if not trim_required %} (Optional with mock data.){% endif %}</p>
       <div class="upload">
         <input type="file" name="trim_file" id="trim_file" accept="application/pdf,image/*" aria-label="TRIM notice file">
-        <button type="submit" class="secondary" formaction="/extract" formnovalidate>Read my notice</button>
+        <button type="submit" class="secondary" id="read_notice" formaction="/extract" formnovalidate>Read my notice</button>
+        <span id="reading" class="muted" role="status" hidden>Reading your notice… photos can take a minute.</span>
       </div>
       {% if ocr_notes %}<ul class="muted" style="font-size:13px">{% for n in ocr_notes %}<li>{{ n }}</li>{% endfor %}</ul>{% endif %}
       <div class="grid" style="margin-top:14px">
@@ -95,6 +96,15 @@
   mail.addEventListener("input", () => { autofilled = false; });
   folio.addEventListener("input", () => {
     if (autofilled && folios[folio.value]) mail.value = folios[folio.value].replace(" (MOCK)", "");
+  });
+  // Read the notice as soon as a file is chosen; the button stays as a manual retry.
+  const trimFile = document.getElementById("trim_file"), readBtn = document.getElementById("read_notice");
+  trimFile.addEventListener("change", () => { if (trimFile.files.length) readBtn.click(); });
+  readBtn.form.addEventListener("submit", (e) => {
+    if (e.submitter === readBtn) {
+      document.getElementById("reading").hidden = false;
+      readBtn.disabled = true;
+    }
   });
   function addRepair() {
     const rows = document.getElementById("repairs"), row = rows.firstElementChild.cloneNode(true);
