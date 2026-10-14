@@ -9,7 +9,7 @@ Generates a Value Adjustment Board (VAB) appeal packet for a Miami-Dade **homeow
 | `deadlines.ics` | Homeowner | Calendar of filing, evidence-exchange, upload, hearing and payment deadlines |
 | `dr486_worksheet.json`, `packet.json` | Integrations | Petition fields and the full structured packet |
 
-See [`docs/SCOPE.md`](docs/SCOPE.md) for the product scope and background.
+Sample output (mock data): [`samples/`](samples/). See [`docs/SCOPE.md`](docs/SCOPE.md) for the product scope and background.
 
 > **Status: MVP on mock data.** Every connector is a mock backed by fictional data in
 > `src/taxappeal/mock_data/mock_data.json`. Outputs carry a "MOCK DATA, not for filing" banner.
