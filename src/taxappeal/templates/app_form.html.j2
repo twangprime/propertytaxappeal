@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tax Appeal Builder</title>
+<style>{% include "app.css" %}</style>
+</head>
+<body>
+<header><div class="inner"><a href="/">Tax Appeal Builder</a><small>Miami-Dade VAB</small></div></header>
+<main>
+  <h1>Build your appeal packet</h1>
+  <p class="muted">Enter your property and we'll check whether an appeal is worth it, then build the evidence packet and a step-by-step guide.</p>
+  <div class="mock"><strong>Mock data:</strong> only the 4 fictional properties below are available until real data sources are connected.</div>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+  <form method="post" action="/generate">
+    <input type="hidden" name="tax_year" value="2026">
+    <section class="card">
+      <h2>1. Your property</h2>
+      <label for="folio">Property (folio number)</label>
+      <select id="folio" name="folio" required>
+        {% for folio, address in folios %}
+        <option value="{{ folio }}" data-address="{{ address.replace(' (MOCK)', '') }}" {{ "selected" if v("folio") == folio }}>{{ folio }} · {{ address }}</option>
+        {% endfor %}
+      </select>
+      <p class="muted" style="font-size:13px;margin:6px 0 0">Your folio number is on your TRIM notice ("Notice of Proposed Property Taxes"). Tax year 2026.</p>
+    </section>
+
+    <section class="card">
+      <h2>2. About you</h2>
+      <div class="grid">
+        <div><label for="owner_name">Owner name</label><input id="owner_name" name="owner_name" type="text" required value="{{ v('owner_name') }}"></div>
+        <div><label for="email">Email</label><input id="email" name="email" type="email" value="{{ v('email') }}"></div>
+        <div class="full"><label for="mailing_address">Mailing address</label><input id="mailing_address" name="mailing_address" type="text" required value="{{ v('mailing_address') }}"></div>
+        <div><label for="phone">Phone</label><input id="phone" name="phone" type="tel" value="{{ v('phone') }}"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Where you are in the process</h2>
+      <div class="grid">
+        <label class="check full"><input type="checkbox" name="petition_filed" id="petition_filed" {{ "checked" if checked("petition_filed") }}> I've already filed my petition with the Value Adjustment Board</label>
+        <div><label for="hearing_date">Hearing date (if scheduled)</label><input id="hearing_date" name="hearing_date" type="date" value="{{ v('hearing_date') }}"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4. Condition problems (optional)</h2>
+      <p class="muted" style="font-size:13px;margin-top:0">Repairs the home needed on January 1, such as a failing roof or plumbing. Contractor estimates make the strongest evidence.</p>
+      <div id="repairs">
+        {% for desc, amount, source in repairs or [("", "", "")] %}
+        <div class="repair">
+          <input type="text" name="repair_description" placeholder="What needs repair" value="{{ desc }}" aria-label="Repair description">
+          <input type="text" name="repair_amount" inputmode="numeric" placeholder="Cost ($)" value="{{ amount }}" aria-label="Repair cost">
+          <input type="text" name="repair_source" placeholder="Contractor (or owner estimate)" value="{{ source }}" aria-label="Estimate source">
+          <button type="button" class="link" onclick="removeRepair(this)" aria-label="Remove">✕</button>
+        </div>
+        {% endfor %}
+      </div>
+      <button type="button" class="secondary" onclick="addRepair()">+ Add repair</button>
+      <label class="check" style="margin-top:14px"><input type="checkbox" name="recent_improvements" {{ "checked" if checked("recent_improvements") }}> I added or renovated something in the past year (addition, pool, etc.)</label>
+    </section>
+
+    <section class="card">
+      <label class="check"><input type="checkbox" name="pdf" checked> Also create printable PDFs (takes a few seconds)</label>
+      <div style="margin-top:12px"><button class="primary" type="submit">Build my packet</button></div>
+    </section>
+  </form>
+</main>
+<script>
+  const folio = document.getElementById("folio"), mail = document.getElementById("mailing_address");
+  let autofilled = !mail.value;
+  function fillAddress() { if (autofilled) mail.value = folio.selectedOptions[0].dataset.address; }
+  mail.addEventListener("input", () => { autofilled = false; });
+  folio.addEventListener("change", fillAddress);
+  fillAddress();
+  function addRepair() {
+    const rows = document.getElementById("repairs"), row = rows.firstElementChild.cloneNode(true);
+    row.querySelectorAll("input").forEach(i => i.value = "");
+    rows.appendChild(row);
+  }
+  function removeRepair(btn) {
+    const rows = document.getElementById("repairs");
+    if (rows.children.length > 1) btn.parentElement.remove();
+    else btn.parentElement.querySelectorAll("input").forEach(i => i.value = "");
+  }
+</script>
+</body>
+</html>

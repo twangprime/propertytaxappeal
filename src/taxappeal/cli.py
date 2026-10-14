@@ -2,6 +2,7 @@
 
     taxappeal list-mock
     taxappeal generate examples/strong_case.json --out out/
+    taxappeal serve                # web UI at http://127.0.0.1:8000
 """
 
 from __future__ import annotations
@@ -47,6 +48,10 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("list-mock", help="List folios available in the mock data")
 
+    srv = sub.add_parser("serve", help="Run the local web UI")
+    srv.add_argument("--host", default="127.0.0.1")
+    srv.add_argument("--port", type=int, default=8000)
+
     gen = sub.add_parser("generate", help="Generate an appeal packet from a case file")
     gen.add_argument("case", help="Path to a case JSON file (see examples/)")
     gen.add_argument("--out", default="out", help="Output directory (default: out/)")
@@ -59,6 +64,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "list-mock":
         for folio, address in mock_folios():
             print(f"{folio}  {address}")
+        return 0
+    if args.cmd == "serve":
+        from .web import serve
+
+        serve(args.host, args.port)
         return 0
     return _generate(args)
 

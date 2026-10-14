@@ -23,6 +23,14 @@ taxappeal generate examples/strong_case.json         # writes out/<folio>/
 pytest
 ```
 
+### Web UI
+
+```bash
+taxappeal serve          # then open http://127.0.0.1:8000
+```
+
+Fill in the form (property, owner, hearing date, optional repair estimates). The results page shows the recommendation, savings, key dates and comparable sales, with links to the evidence packet, owner guide, calendar file and petition worksheet. Runs are saved under `out/web/`. The server only runs locally and uses the standard library (no extra dependencies).
+
 PDFs are printed with headless Chromium. Set `CHROMIUM_PATH` if it isn't found automatically, or pass `--no-pdf`.
 
 ### Example scenarios

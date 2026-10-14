@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Appeal Packet</title>
+<style>{% include "app.css" %}</style>
+</head>
+<body>
+<header><div class="inner"><a href="/">Tax Appeal Builder</a><small>Miami-Dade VAB</small></div></header>
+<main>
+  <p class="muted" style="margin:0">{{ p.property.address }} · Folio {{ p.property.folio }}</p>
+  <h1>Should you appeal?</h1>
+  <p><span class="badge {{ d.recommendation.value }}">{{ {"go": "Yes, appeal", "maybe": "Optional", "no_go": "Not recommended"}[d.recommendation.value] }}</span></p>
+
+  <section class="card">
+    <div class="stats">
+      <div class="stat"><div class="label">Appraiser's value</div><div class="value">{{ v.current_just_value|money }}</div></div>
+      <div class="stat"><div class="label">Supported by sales</div><div class="value">{{ v.requested_just_value|money }}</div></div>
+      <div class="stat"><div class="label">Est. savings / year</div><div class="value">{{ d.estimated_annual_savings|money }}</div></div>
+    </div>
+    <ul>{% for r in d.reasons %}<li>{{ r }}</li>{% endfor %}</ul>
+    <p class="muted" style="font-size:13px">Case strength: <strong>{{ v.confidence }}</strong> · based on {{ v.comps|length }} comparable sales.</p>
+  </section>
+
+  <section class="card">
+    <h2>Your documents</h2>
+    <div class="actions">
+      <a class="btn primary" href="/files/{{ run_id }}/{{ 'evidence.pdf' if has_pdf else 'evidence.html' }}" target="_blank">Evidence packet (for the VAB)</a>
+      <a class="btn secondary" href="/files/{{ run_id }}/{{ 'owner_guide.pdf' if has_pdf else 'owner_guide.html' }}" target="_blank">Your appeal guide</a>
+      <a class="btn secondary" href="/files/{{ run_id }}/deadlines.ics">Add deadlines to calendar</a>
+      <a class="btn secondary" href="/files/{{ run_id }}/dr486_worksheet.json">Petition worksheet (JSON)</a>
+    </div>
+    {% if has_pdf %}<p class="muted" style="font-size:13px;margin-bottom:0">Web versions: <a href="/files/{{ run_id }}/evidence.html" target="_blank">evidence</a> · <a href="/files/{{ run_id }}/owner_guide.html" target="_blank">guide</a></p>{% endif %}
+  </section>
+
+  <section class="card">
+    <h2>Key dates</h2>
+    <table>
+      {% for dl in p.deadlines %}
+      <tr><td style="white-space:nowrap">{{ dl.due.strftime("%b %d, %Y") }}</td><td>{{ dl.name }}{% if not dl.verified %} <span class="muted">(unverified)</span>{% endif %}</td></tr>
+      {% endfor %}
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Comparable sales used</h2>
+    <div class="table-wrap">
+    <table>
+      <tr><th>Address</th><th>Sold</th><th class="num">Price</th><th class="num">Adjusted</th><th class="num">Distance</th></tr>
+      {% for c in v.comps %}
+      <tr><td>{{ c.sale.address }}</td><td>{{ c.sale.sale_date.strftime("%m/%d/%Y") }}</td><td class="num">{{ c.sale.price|money }}</td><td class="num">{{ c.adjusted_price|money }}</td><td class="num">{{ c.distance_mi }} mi</td></tr>
+      {% endfor %}
+    </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Assessment checks</h2>
+    <ul>{% for a in v.audits %}<li class="{{ 'issue' if a.severity == 'issue' }}">{{ a.message }}</li>{% endfor %}</ul>
+  </section>
+
+  <p><a class="btn secondary" href="/">Start another</a></p>
+  <p class="muted" style="font-size:12px">Automated estimate based on mock data. Not legal advice or a licensed appraisal.</p>
+</main>
+</body>
+</html>
