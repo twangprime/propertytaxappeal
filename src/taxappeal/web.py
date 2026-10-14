@@ -163,11 +163,13 @@ class App:
         upload = files.get("trim_file")
         if not upload:
             return self.form_page("Choose your TRIM notice file first.", form)
-        from .connectors.ocr import ClaudeTrimReader, media_type_for
+        from .connectors.local_ocr import LocalTrimReader
+        from .connectors.ocr import media_type_for
 
         filename, ctype, data = upload
         try:
-            reader = self._trim_reader or ClaudeTrimReader()
+            # The configured OCR connector's reader (local or Claude); local open-source OCR otherwise.
+            reader = self._trim_reader or getattr(self.connectors.trim_notices, "reader", None) or LocalTrimReader()
             extraction = reader.extract(data, media_type_for(filename, ctype))
         except Exception as e:  # any OCR failure falls back to manual entry
             reason = str(e)

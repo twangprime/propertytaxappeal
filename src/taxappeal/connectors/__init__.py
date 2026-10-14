@@ -1,6 +1,6 @@
 """Connector registry. Pick an implementation per connector by name, e.g.
 
-    build_connectors(property_records="dor", sales="dor", trim_notices="ocr")
+    build_connectors(property_records="dor", sales="dor", trim_notices="ocr")  # ocr = local, no API key
 
 or set TAXAPPEAL_CONNECTORS="property_records=dor,sales=dor,trim_notices=ocr".
 
@@ -45,16 +45,23 @@ def _dor_sales():
     return DorSales()
 
 
-def _ocr_trim():
+def _claude_trim():
+    from .ocr import ClaudeTrimReader, OcrTrimNotices
+
+    return OcrTrimNotices(reader_factory=ClaudeTrimReader, label="Claude")
+
+
+def _local_trim():
+    from .local_ocr import LocalTrimReader
     from .ocr import OcrTrimNotices
 
-    return OcrTrimNotices()
+    return OcrTrimNotices(reader_factory=LocalTrimReader, label=LocalTrimReader.label)
 
 
 REGISTRY: dict[str, dict[str, Callable[[], object]]] = {
     "property_records": {"mock": MockPropertyRecords, "dor": _dor_records},
     "sales": {"mock": MockSales, "dor": _dor_sales},
-    "trim_notices": {"mock": MockTrimNotices, "ocr": _ocr_trim},
+    "trim_notices": {"mock": MockTrimNotices, "ocr": _local_trim, "claude": _claude_trim},
     "narrative": {"mock": MockNarrativeWriter, "template": MockNarrativeWriter},
 }
 

@@ -3,7 +3,7 @@
 Accepts a PDF or a photo. The model returns JSON constrained to ``TRIM_SCHEMA``; we validate it,
 and the owner confirms the values before they are used (the web UI shows them for review).
 
-Needs the ``anthropic`` package (``pip install -e '.[ocr]'``) and credentials
+Needs the ``anthropic`` package (``pip install -e '.[claude]'``) and credentials
 (``ANTHROPIC_API_KEY``, or an ``ant auth login`` profile).
 """
 
@@ -124,7 +124,7 @@ class ClaudeTrimReader:
             try:
                 import anthropic
             except ImportError as e:
-                raise OcrUnavailableError("OCR needs the anthropic package: pip install -e '.[ocr]'") from e
+                raise OcrUnavailableError("OCR needs the anthropic package: pip install -e '.[claude]'") from e
             client = anthropic.Anthropic()
         self.client = client
         self.model = model
@@ -157,17 +157,17 @@ class ClaudeTrimReader:
 
 
 class OcrTrimNotices:
-    """TrimNoticeSource that reads ``case.trim_notice_path`` with Claude."""
+    """TrimNoticeSource that reads ``case.trim_notice_path`` with a TRIM reader (Claude or local OCR)."""
 
-    name = "OCR of the owner's TRIM notice (Claude)"
-
-    def __init__(self, reader: ClaudeTrimReader | None = None):
+    def __init__(self, reader=None, reader_factory=ClaudeTrimReader, label: str = "Claude"):
         self._reader = reader
+        self._factory = reader_factory
+        self.name = f"OCR of the owner's TRIM notice ({label})"
 
     @property
-    def reader(self) -> ClaudeTrimReader:
+    def reader(self):
         if self._reader is None:
-            self._reader = ClaudeTrimReader()
+            self._reader = self._factory()
         return self._reader
 
     def get_trim_notice(self, case: CaseInput) -> TrimNotice:

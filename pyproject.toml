@@ -11,7 +11,8 @@ dependencies = ["pydantic>=2", "jinja2>=3"]
 
 [project.optional-dependencies]
 dev = ["pytest"]
-ocr = ["anthropic>=1.13"]
+claude = ["anthropic>=1.13"]
+local-ocr = ["pypdf>=4", "pypdfium2>=4", "pillow>=10", "transformers>=4.56", "torch>=2.2"]
 
 [project.scripts]
 taxappeal = "taxappeal.cli:main"

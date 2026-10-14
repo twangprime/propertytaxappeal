@@ -62,7 +62,7 @@ Each external dependency is a `Protocol` in `src/taxappeal/connectors/base.py`, 
 |---|---|---|
 | `property_records` | `mock`, **`dor`** (FL DOR NAL roll) | Real data available |
 | `sales` | `mock`, **`dor`** (FL DOR Sale Data File) | Real data available |
-| `trim_notices` | `mock`, **`ocr`** (Claude reads the owner's TRIM notice) | Real; owner confirms the values |
+| `trim_notices` | `mock`, **`ocr`** (local open-source OCR, no API key), `claude` | Real; owner confirms the values |
 | `narrative` | `template` | Template text. A Claude writer is planned and must pass the grounding check |
 
 See [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) for field mappings and caveats.
@@ -84,16 +84,19 @@ See [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) for field mappings and caveat
 
 To try this without downloading anything, `examples/dor_sample/` holds small DOR-format files built from the fictional mock data. Run `python tests/dor_fixture.py examples/dor_sample` to regenerate them.
 
-### Reading the TRIM notice (`ocr`)
+### Reading the TRIM notice (`ocr`, no API key)
 
 ```bash
-pip install -e '.[ocr]'
-export ANTHROPIC_API_KEY=...              # or `ant auth login`
+pip install -e '.[local-ocr]'
 taxappeal ocr samples/sample_trim_notice.pdf          # prints the values it read
 taxappeal generate case.json --property-records dor --sales dor --trim-notice notice.pdf
 ```
 
-In the web UI, the owner uploads the notice and clicks **Read my notice**. The values are filled into the form for the owner to check before building. The owner can also type the values in, which works without an API key. The folio read from the notice is cross-checked against the property, and differences from the roll are listed under "Please double-check".
+- **PDF with a text layer**, such as one downloaded from the Property Appraiser's site: the text is read directly and parsed with rules. No model is needed.
+- **Photo or scanned PDF**: the text comes from [GOT-OCR 2.0](https://huggingface.co/stepfun-ai/GOT-OCR-2.0-hf), an open-source page-OCR model run locally with Hugging Face `transformers`, and then goes through the same parser. The weights (about 1.5 GB) download on first use. A GPU is much faster but not required. Set `TAXAPPEAL_OCR_MODEL` to use a different model.
+- **Optional Claude reader**: `pip install -e '.[claude]'`, set `ANTHROPIC_API_KEY`, then use `--engine claude` or `trim_notices=claude`. It handles unusual layouts better than the rule-based parser.
+
+In the web UI, the owner uploads the notice and clicks **Read my notice**. The values are filled into the form for the owner to check before building, and anything that couldn't be read is left blank. The owner can also type the values in. The folio read from the notice is cross-checked against the property, and differences from the roll are listed under "Please double-check".
 
 ## Not yet built
 

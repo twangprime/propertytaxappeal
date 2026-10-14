@@ -104,3 +104,13 @@ def test_serve_explains_missing_dor_index(tmp_path, monkeypatch):
     monkeypatch.setattr("taxappeal.connectors.dor.DEFAULT_DB", tmp_path / "missing.sqlite")
     with pytest.raises(SystemExit, match="import-dor"):
         serve(port=0, out_root=tmp_path / "web")
+
+
+def test_read_my_notice_works_without_api_key(tmp_path):
+    from pathlib import Path
+
+    pdf = (Path(__file__).resolve().parents[1] / "samples" / "sample_trim_notice.pdf").read_bytes()
+    page = App(tmp_path).extract_trim(form(folio=[""]), {"trim_file": ("notice.pdf", "application/pdf", pdf)})
+    assert 'value="655000"' in page and 'value="15.9288"' in page and 'value="2026-09-18"' in page
+    assert 'name="folio" type="text"' in page and 'value="30-4019-001-0100"' in page
+    assert "Text source: PDF text layer." in page

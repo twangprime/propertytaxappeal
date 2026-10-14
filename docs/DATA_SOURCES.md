@@ -36,12 +36,21 @@ What each connector reads, how fields map to the app's model, and what still nee
 | Multi-parcel sale | `MULTI_PAR_SAL` | Excluded when set |
 | Building attributes | Joined from the NAL by `PARCEL_ID` | These are **current-roll** attributes, so a house remodeled after its sale shows the new size |
 
-## TRIM notice (`ocr` connector)
+## TRIM notice (`ocr` and `claude` connectors)
 
-The owner uploads a PDF or photo. Claude (`claude-opus-5-5`, structured JSON output) reads the folio, tax year, mailing date, petition deadline, this year's just, assessed and taxable values, last year's assessed value, and the total proposed millage.
+The owner uploads a PDF or photo. Both readers return the same fields: folio, tax year, mailing date, petition deadline, this year's just, assessed and taxable values, last year's assessed value, and the total proposed millage.
 
-- Where school and non-school values differ, it uses the non-school values and notes both.
-- Anything it can't read comes back blank with a note. The owner must confirm or enter values before a packet is built.
+**`ocr`** (default, no API key, `connectors/local_ocr.py`):
+1. **Get the text.**
+   - A PDF text layer is read with pypdf.
+   - Photos and scanned PDFs (rendered with pypdfium2) are read by **GOT-OCR 2.0** (`stepfun-ai/GOT-OCR-2.0-hf`) through Hugging Face `transformers`, running locally.
+2. **Parse with rules.** Each value is taken from the numbers after its label ("Market Value", "Assessed Value", "Taxable Value"). When a label has two numbers, the first is last year and the last is this year. Non-school rows are preferred over school rows. Millage comes from the "Total" row's last rate.
+3. **Known limit.** The rules were written against the sample notice and typical TRIM layouts. They have **not been tested on a real Miami-Dade notice**. If a value isn't found, it's left blank for the owner. If the real layout differs, adjust `parse_trim_text`.
+
+**`claude`** (optional, needs `ANTHROPIC_API_KEY`): Claude reads the document directly into structured JSON. It's more tolerant of layout differences.
+
+With either reader:
+- Anything that can't be read comes back blank with a note. The owner must confirm or enter values before a packet is built.
 - The folio read from the notice must match the property. Value differences from the roll are listed as warnings.
 - If a petition deadline is printed on the notice, it overrides the configured deadline.
 

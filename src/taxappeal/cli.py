@@ -4,7 +4,7 @@
     taxappeal generate examples/strong_case.json --out out/
     taxappeal import-dor --nal NAL23F202601.csv --sdf SDF23F202601.csv [--coords points.csv]
     taxappeal generate case.json --property-records dor --sales dor --trim-notice notice.pdf
-    taxappeal ocr notice.pdf       # print the values read from a TRIM notice
+    taxappeal ocr notice.pdf       # print the values read from a TRIM notice (local OCR, no API key)
     taxappeal serve                # web UI at http://127.0.0.1:8000
 
 Connector choices also come from TAXAPPEAL_CONNECTORS (e.g. "property_records=dor,sales=dor");
@@ -68,9 +68,12 @@ def _import_dor(args: argparse.Namespace) -> int:
 
 
 def _ocr(args: argparse.Namespace) -> int:
-    from .connectors.ocr import ClaudeTrimReader
+    if args.engine == "claude":
+        from .connectors.ocr import ClaudeTrimReader as Reader
+    else:
+        from .connectors.local_ocr import LocalTrimReader as Reader
 
-    extraction = ClaudeTrimReader().extract_file(Path(args.file))
+    extraction = Reader().extract_file(Path(args.file))
     print(extraction.model_dump_json(indent=2))
     if extraction.missing():
         print(f"Missing: {', '.join(extraction.missing())}", file=sys.stderr)
@@ -104,8 +107,10 @@ def main(argv: list[str] | None = None) -> int:
     imp.add_argument("--db", default=None, help="SQLite index path (default: TAXAPPEAL_DOR_DB or data/dor.sqlite)")
     imp.add_argument("--county", default="23", help="DOR county number to keep (default 23, Miami-Dade; '' for all)")
 
-    ocr = sub.add_parser("ocr", help="Read the values on a TRIM notice (needs an Anthropic API key)")
+    ocr = sub.add_parser("ocr", help="Read the values on a TRIM notice")
     ocr.add_argument("file", help="TRIM notice PDF or photo")
+    ocr.add_argument("--engine", choices=["local", "claude"], default="local",
+                     help="local: open-source OCR, no API key (default); claude: Anthropic API")
 
     args = parser.parse_args(argv)
     if args.cmd == "list-mock":
