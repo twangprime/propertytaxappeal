@@ -122,7 +122,7 @@ def test_pdf_reader_dependencies_are_in_base_install():
 
     deps = tomllib.loads((Path(__file__).resolve().parents[1] / "pyproject.toml").read_text())["project"]["dependencies"]
     names = {d.split(">")[0].split("=")[0] for d in deps}
-    assert {"pypdf", "pypdfium2", "pillow"} <= names
+    assert {"pypdfium2", "pillow"} <= names
 
 
 def test_reader_errors_show_in_trim_section_and_reader_is_reused(tmp_path):

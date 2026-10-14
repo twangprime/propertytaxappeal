@@ -7,8 +7,8 @@ name = "taxappeal"
 version = "0.1.0"
 description = "Generate Miami-Dade VAB property tax appeal packets for homeowners"
 requires-python = ">=3.11"
-# pypdf/pypdfium2/pillow: reading TRIM notice PDFs (text layer) works out of the box.
-dependencies = ["pydantic>=2", "jinja2>=3", "pypdf>=4", "pypdfium2>=4", "pillow>=10"]
+# pypdfium2/pillow: reading TRIM notice PDFs (text layer) works out of the box.
+dependencies = ["pydantic>=2", "jinja2>=3", "pypdfium2>=4", "pillow>=10"]
 
 [project.optional-dependencies]
 dev = ["pytest"]

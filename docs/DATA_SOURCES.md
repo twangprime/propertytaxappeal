@@ -42,10 +42,15 @@ The owner uploads a PDF or photo. Both readers return the same fields: folio, ta
 
 **`ocr`** (default, no API key, `connectors/local_ocr.py`):
 1. **Get the text.**
-   - A PDF text layer is read with pypdf.
+   - A PDF text layer is read with pypdfium2 and rebuilt into visual rows by position. Real notices store the printed form and the filled-in values as separate text, so reading in stream order separates labels from numbers.
    - Photos and scanned PDFs (rendered with pypdfium2) are read by **GOT-OCR 2.0** (`stepfun-ai/GOT-OCR-2.0-hf`) through Hugging Face `transformers`, running locally.
-2. **Parse with rules.** Each value is taken from the numbers after its label ("Market Value", "Assessed Value", "Taxable Value"). When a label has two numbers, the first is last year and the last is this year. Non-school rows are preferred over school rows. Millage comes from the "Total" row's last rate.
-3. **Known limit.** The rules were written against the sample notice and typical TRIM layouts. They have **not been tested on a real Miami-Dade notice**. If a value isn't found, it's left blank for the owner. If the real layout differs, adjust `parse_trim_text`.
+2. **Parse with rules.** These were written against a real 2026 Miami-Dade notice:
+   - **Market and assessed values:** from the "PRIOR VALUE (2025)" and "CURRENT VALUE (2026)" rows, whose columns are market, assessed (school levy) and assessed (non-school levy). The non-school assessed value is used.
+   - **Taxable value:** the non-school "Current Taxable Value" (column 3), taken from the first taxing-authority row outside the PUBLIC SCHOOLS section.
+   - **Total millage:** the sum of every authority's "If PROPOSED Budget" rate (column 5). For the notice tested, rate × taxable reproduces the printed ad valorem total.
+   - **Folio, tax year and petition deadline:** read from the notice text ("on or before SEP. 18, 2026").
+   - **Other layouts:** a fallback reads label-then-number layouts.
+   - **Not on the notice:** the mailing date, so the form uses a default the owner can change.
 
 **`claude`** (optional, needs `ANTHROPIC_API_KEY`): Claude reads the document directly into structured JSON. It's more tolerant of layout differences.
 

@@ -107,3 +107,33 @@ def test_model_missing_gives_install_hint(monkeypatch):
 
     with pytest.raises(OcrUnavailableError, match="local-ocr"):
         GotOcrEngine().image_to_text(None)
+
+
+MIAMI_DADE_SAMPLE = SAMPLE.with_name("sample_trim_notice_miami_dade.pdf")
+
+
+def test_miami_dade_layout_pdf():
+    """Real notices store the form and the values as separate text; rows must be rebuilt by position."""
+    e = LocalTrimReader(FakeEngine()).extract(MIAMI_DADE_SAMPLE.read_bytes(), "application/pdf")
+    assert e.folio == "30-4019-001-0100" and e.tax_year == 2026
+    assert (e.just_value, e.assessed_value, e.prior_assessed_value) == (705000, 655000, 610000)
+    assert e.taxable_value == 605000  # non-school "Current Taxable Value" (Countywide row), not the school row
+    assert e.total_millage == 14.8962  # sum of the proposed-budget rates
+    assert e.petition_deadline == date(2026, 9, 18)
+    assert not e.missing()
+
+
+def test_miami_dade_rows_from_ocr_text():
+    text = """NOTICE OF PROPOSED PROPERTY TAXES AND
+FOLIO: 30-0000-000-0001
+MIAMI-DADE COUNTY:
+Countywide 500,000 4.5740 2,287.00 510,000 4.3301 2,208.35 4.5740 2,332.74
+PUBLIC SCHOOLS:
+By State Law 525,000 3.2510 1,706.78 535,000 3.1210 1,669.74 3.2510 1,739.29
+PRIOR VALUE ( 20 2 5 ) 700,000 550,000 550,000
+CURRENT VALUE (2026) 720,000 560,000 560,000
+Petitions must be filed on or before
+SEPT. 16, 2026"""
+    e = parse_trim_text(text)
+    assert (e.just_value, e.assessed_value, e.prior_assessed_value, e.taxable_value) == (720000, 560000, 550000, 510000)
+    assert e.total_millage == 7.825 and e.tax_year == 2026 and e.petition_deadline == date(2026, 9, 16)

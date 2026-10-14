@@ -84,3 +84,68 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+# ---- Miami-Dade layout ------------------------------------------------------------------
+# Mirrors the real notice: the printed form and the filled-in values are drawn separately, so
+# a plain text-stream read separates labels from numbers (the reader must rebuild rows).
+OUT_MD = Path(__file__).resolve().parents[1] / "samples/sample_trim_notice_miami_dade.pdf"
+MD_ROWS = [  # section, name, last taxable, last rate, current taxable, rolled-back rate, proposed rate
+    ("MIAMI-DADE COUNTY:", "Countywide", 590000, 4.5740, 605000, 4.3301, 4.5740),
+    (None, "Fire Rescue", 590000, 2.3965, 605000, 2.2644, 2.3965),
+    ("PUBLIC SCHOOLS:", "By State Law", 615000, 3.2510, 630000, 3.1210, 3.2510),
+    (None, "By Local Board", 615000, 2.2480, 630000, 2.1181, 2.2480),
+    ("MUNICIPAL:", "Unincorp Area", 590000, 1.9090, 605000, 1.7983, 1.9090),
+    ("VOTER APPROVED DEBT PAYMENTS:", "County Debt", 590000, 0.4171, 605000, 0.3937, 0.3937),
+    (None, "School Debt", 615000, 0.1340, 630000, 0.1240, 0.1240),
+]
+
+
+def main_miami_dade() -> None:
+    c = canvas.Canvas(str(OUT_MD), pagesize=letter)
+    w, h = letter
+    x = [0.4, 2.3, 2.95, 3.6, 4.4, 5.05, 5.75, 6.45, 7.15]
+    # Pass 1: the printed form (labels only).
+    c.setFont("Helvetica-Bold", 7)
+    c.drawString(0.4 * inch, h - 0.35 * inch, "SAMPLE - FICTIONAL DATA FOR SOFTWARE TESTING - NOT AN OFFICIAL NOTICE")
+    c.setFont("Helvetica-Bold", 10)
+    c.drawCentredString(w / 2, h - 0.6 * inch, "NOTICE OF PROPOSED PROPERTY TAXES AND")
+    c.drawCentredString(w / 2, h - 0.75 * inch, "MIAMI-DADE COUNTY TAXING AUTHORITIES")
+    c.setFont("Helvetica", 6)
+    for xi, label in zip(x[1:], ["Last Year's Taxable Value", "Tax Rate", "Taxes", "Current Taxable Value",
+                                 "Tax Rate", "Taxes", "Tax Rate", "Taxes"]):
+        c.drawString(xi * inch, h - 2.0 * inch, label)
+    c.drawString(x[0] * inch, h - 2.0 * inch, "TAXING AUTHORITY")
+    c.drawString(1.5 * inch, h - 5.9 * inch, "MARKET VALUE")
+    c.drawString(3.3 * inch, h - 5.9 * inch, "ASSESSED VALUE - School Levy")
+    c.drawString(5.3 * inch, h - 5.9 * inch, "ASSESSED VALUE - Non-School Levy")
+    c.drawString(0.4 * inch, h - 6.05 * inch, "PRIOR VALUE (2025)")
+    c.drawString(0.4 * inch, h - 6.2 * inch, "CURRENT VALUE (2026)")
+    c.drawString(0.4 * inch, h - 6.7 * inch, "If the Property Appraiser is unable to resolve the matter, you may file a "
+                                             "petition with the Value Adjustment Board. Petitions must be filed on or before")
+    # Pass 2: the filled-in values.
+    c.setFont("Helvetica-Bold", 7)
+    c.drawString(4.3 * inch, h - 1.1 * inch, "FOLIO: 30-4019-001-0100")
+    c.drawString(4.3 * inch, h - 1.25 * inch, "PROPERTY ADDRESS: 1200 MOCKINGBIRD ST")
+    c.drawString(6.9 * inch, h - 1.1 * inch, "2026")
+    y = h - 2.2 * inch
+    for section, name, last_tv, last_rate, cur_tv, rb_rate, rate in MD_ROWS:
+        if section:
+            c.drawString(x[0] * inch, y, section)
+            y -= 11
+        vals = [name, f"{last_tv:,}", f"{last_rate:.4f}", f"{last_tv * last_rate / 1000:,.2f}", f"{cur_tv:,}",
+                f"{rb_rate:.4f}", f"{cur_tv * rb_rate / 1000:,.2f}", f"{rate:.4f}", f"{cur_tv * rate / 1000:,.2f}"]
+        for xi, v in zip(x, vals):
+            c.drawString(xi * inch, y, v)
+        y -= 11
+    for row_y, vals in [(h - 6.05 * inch, ["640,000", "610,000", "610,000"]),
+                        (h - 6.2 * inch, ["705,000", "655,000", "655,000"])]:
+        for xi, v in zip([1.6, 3.6, 5.6], vals):
+            c.drawString(xi * inch, row_y, v)
+    c.drawString(0.4 * inch, h - 6.85 * inch, "SEP. 18, 2026")
+    c.save()
+    print(f"wrote {OUT_MD}")
+
+
+if __name__ == "__main__":
+    main_miami_dade()

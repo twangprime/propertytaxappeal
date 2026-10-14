@@ -1,8 +1,8 @@
 """Read a TRIM notice without an API key: open-source OCR plus a rule-based parser.
 
 1. Get the notice's text:
-   * PDFs with a text layer (e.g. downloaded from the Property Appraiser's site): read directly
-     with pypdf. No model needed.
+   * PDFs with a text layer (e.g. downloaded from the Property Appraiser's site): text fragments
+     are read with pypdfium2 and regrouped into visual rows by position. No model needed.
    * Photos and scanned PDFs: GOT-OCR 2.0 (``stepfun-ai/GOT-OCR-2.0-hf``), an open-source page-OCR
      model from Hugging Face, run locally with ``transformers``. Override the model with
      TAXAPPEAL_OCR_MODEL. Weights (~1.5 GB) download on first use; a GPU is much faster but
@@ -29,12 +29,13 @@ MIN_TEXT_LAYER_CHARS = 200
 
 _MONEY = re.compile(r"\$?\b\d{1,3}(?:,\d{3})+\b|\$?\b\d{4,9}\b|(?<![\d.])\b0\b(?![.\d])")
 _MILLS = re.compile(r"\b\d{1,2}\.\d{3,4}\b")
-_DATE = re.compile(r"([A-Z][a-z]+\.? \d{1,2},? \d{4}|\d{1,2}/\d{1,2}/\d{4})")
+_MONTH = r"(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*"
+_DATE = re.compile(r"(" + _MONTH + r"\.? \d{1,2},? \d{4}|\d{1,2}/\d{1,2}/\d{4})", re.I)
 _FOLIO = re.compile(r"\b(\d{2}-\d{4}-\d{3}-\d{4})\b|folio\s*(?:no\.?|number|#)?\s*[:#]?\s*([\d-]{13,17})", re.I)
 
 
 def _parse_date(text: str) -> date | None:
-    text = text.replace(".", "").replace(",", "")
+    text = text.replace(".", "").replace(",", "").title().replace("Sept ", "Sep ")
     for fmt in ("%B %d %Y", "%b %d %Y", "%m/%d/%Y"):
         try:
             return datetime.strptime(text, fmt).date()
@@ -76,9 +77,62 @@ def _labelled_values(lines: list[str], label: str, prefer: str | None = None,
     return None, None, None
 
 
+_NUMBER = re.compile(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+\.\d+|\d+")
+
+
+def _numbers(text: str) -> list[str]:
+    return _NUMBER.findall(text)
+
+
+def _to_int(token: str) -> int:
+    return int(float(token.replace(",", "")))
+
+
+def _join_split_years(line: str) -> str:
+    """Text layers sometimes split "(2026)" into "( 20 2 6 )"."""
+    return re.sub(r"\(\s*((?:\d\s*){4})\)", lambda m: "(" + re.sub(r"\s", "", m.group(1)) + ")", line)
+
+
+def _authority_rows(lines: list[str]) -> list[tuple[str, bool, int, float]]:
+    """Rows of the taxing-authority table: (name, is_school, current taxable value, proposed millage).
+
+    Miami-Dade rows read: name, last year's taxable, rate, taxes, current taxable, rolled-back rate,
+    taxes, proposed rate, taxes. Section headers end with ':' (e.g. "PUBLIC SCHOOLS:")."""
+    rows, section = [], ""
+    for line in lines:
+        if re.fullmatch(r"[A-Z][A-Z .&'-]+:", line):
+            section = line
+            continue
+        tokens = _numbers(line)
+        rates = [t for t in tokens if re.fullmatch(r"\d{1,2}\.\d{4}", t)]
+        if len(rates) < 3 or len(tokens) < 8:
+            continue
+        name = line[:line.find(tokens[0])].strip()
+        taxables = [t for t in tokens if "." not in t]
+        if len(taxables) < 2:
+            continue
+        is_school = "SCHOOL" in section.upper() or "school" in name.lower()
+        rows.append((name, is_school, _to_int(taxables[1]), float(rates[-1])))
+    return rows
+
+
+def _value_rows(lines: list[str]) -> dict[str, list[int]]:
+    """Miami-Dade "VALUE INFORMATION" block: PRIOR/CURRENT VALUE rows with market, assessed (school),
+    assessed (non-school)."""
+    out = {}
+    for line in lines:
+        m = re.match(r"(PRIOR|CURRENT) VALUE \((20\d\d)\)\W*(.*)", line, re.I)
+        if m:
+            values = [_to_int(t) for t in _numbers(m.group(3))]
+            if len(values) >= 2:
+                out[m.group(1).upper()] = values
+                out[m.group(1).upper() + "_YEAR"] = [int(m.group(2))]
+    return out
+
+
 def parse_trim_text(text: str) -> TrimExtraction:
     """Rule-based extraction from the text of a TRIM notice."""
-    lines = [re.sub(r"\s+", " ", line).strip() for line in text.splitlines()]
+    lines = [_join_split_years(re.sub(r"\s+", " ", line).strip()) for line in text.splitlines()]
     lines = [line for line in lines if line]
     flat = " ".join(lines)
     notes: list[str] = []
@@ -87,7 +141,11 @@ def parse_trim_text(text: str) -> TrimExtraction:
     folio_match = _FOLIO.search(flat)
     folio = (folio_match.group(1) or folio_match.group(2)) if folio_match else None
 
-    year_match = re.search(r"tax year\D{0,10}(20\d\d)", flat, re.I) or re.search(r"this year\D{0,4}(20\d\d)", flat, re.I)
+    value_rows = _value_rows(lines)
+    authorities = _authority_rows(lines)
+
+    year_match = (re.search(r"tax year\D{0,10}(20\d\d)", flat, re.I) or re.search(r"this year\D{0,4}(20\d\d)", flat, re.I)
+                  or re.search(r"current value \((20\d\d)\)", flat, re.I))
     tax_year = int(year_match.group(1)) if year_match else None
 
     mailing = re.search(r"mail(?:ing|ed)?(?: date)?\s*(?:on)?\s*[:\-]?\s*" + _DATE.pattern, flat, re.I)
@@ -101,8 +159,20 @@ def parse_trim_text(text: str) -> TrimExtraction:
     if assessed_line and "school" in assessed_line.lower() and "non" not in assessed_line.lower():
         notes.append("Only a school assessed value was found; check the non-school value.")
 
+    if "CURRENT" in value_rows:  # Miami-Dade layout: market, assessed (school), assessed (non-school)
+        just_value, assessed = value_rows["CURRENT"][0], value_rows["CURRENT"][-1]
+        prior_assessed = value_rows.get("PRIOR", [None])[-1]
+        if len(value_rows["CURRENT"]) >= 3 and value_rows["CURRENT"][1] != assessed:
+            notes.append("School and non-school assessed values differ; the non-school value is used.")
+
     total_millage = None
-    for i, line in enumerate(lines):
+    if authorities:
+        non_school = [r for r in authorities if not r[1]]
+        if non_school:
+            taxable = non_school[0][2]
+        total_millage = round(sum(r[3] for r in authorities), 4)
+        notes.append(f"Total millage is the sum of the proposed rates of {len(authorities)} taxing authorities.")
+    for i, line in enumerate(lines if total_millage is None else []):
         if re.match(r"total\b", line, re.I):
             mills = [float(m) for m in _numbers_after(lines, i, re.compile(r"total", re.I), _MILLS)]
             mills = [m for m in mills if 5 <= m <= 40]
@@ -205,13 +275,44 @@ class LocalTrimReader:
         return self.extract(path.read_bytes(), media_type_for(path.name))
 
 
-def _pdf_text_layer(data: bytes) -> str:
+def _pdf_text_layer(data: bytes, max_pages: int = 2) -> str:
+    """The PDF's text, rebuilt into visual rows from each text fragment's position.
+
+    Real TRIM notices store the printed form and the filled-in values as separate text, so reading
+    the text stream in order puts labels and numbers far apart. Grouping fragments by their
+    vertical position restores rows such as "Countywide 565,794 4.5740 ... 2,660.92"."""
     try:
-        from pypdf import PdfReader
+        import pypdfium2 as pdfium
     except ImportError as e:
-        raise OcrUnavailableError("Reading PDFs needs pypdf: pip install -e '.[local-ocr]'") from e
-    reader = PdfReader(io.BytesIO(data))
-    return "\n".join(page.extract_text() or "" for page in reader.pages[:4])
+        raise OcrUnavailableError("Reading PDFs needs pypdfium2: pip install -e .") from e
+    pdf = pdfium.PdfDocument(data)
+    lines = []
+    for index in range(min(len(pdf), max_pages)):
+        textpage = pdf[index].get_textpage()
+        runs = []
+        for i in range(textpage.count_rects()):
+            left, bottom, right, top = textpage.get_rect(i)
+            text = textpage.get_text_bounded(left, bottom, right, top).strip()
+            if text:
+                runs.append(((top + bottom) / 2, left, right, text))
+        runs.sort(key=lambda r: (-r[0], r[1]))
+        row: list = []
+        row_y = None
+        for y, left, right, text in runs + [(None, 0, 0, "")]:
+            if row and (y is None or abs(y - row_y) > 3):
+                row.sort(key=lambda r: r[0])
+                line = row[0][2]
+                for (_, prev_right, _), (cur_left, cur_right, cur_text) in zip(
+                        [(r[0], r[1], r[2]) for r in row], row[1:]):
+                    # Fragments of one word sit nearly touching; separate words have a visible gap.
+                    line += ("" if cur_left - prev_right < 1.0 else " ") + cur_text
+                lines.append(line)
+                row = []
+            if y is not None:
+                if not row:
+                    row_y = y
+                row.append((left, right, text))
+    return "\n".join(lines)
 
 
 def _pdf_to_images(data: bytes, max_pages: int = 2):
