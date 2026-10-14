@@ -139,15 +139,30 @@ class App:
         self.out_root = out_root
         self.connectors = connectors or build_connectors(**choices_from_env())
         self._trim_reader = trim_reader
+        self._local_reader = None  # one reader per server, so the OCR model loads only once
 
     @property
     def mock_mode(self) -> bool:
         return "mock" in self.connectors.property_records.name
 
+    def trim_reader(self):
+        """The configured OCR connector's reader (local or Claude); local open-source OCR otherwise."""
+        reader = self._trim_reader or getattr(self.connectors.trim_notices, "reader", None)
+        if reader is None:
+            if self._local_reader is None:
+                from .connectors.local_ocr import LocalTrimReader
+
+                self._local_reader = LocalTrimReader()
+            reader = self._local_reader
+        return reader
+
     def form_page(self, error: str = "", values: Form | None = None, notice: str = "",
-                  ocr_notes: list[str] | None = None) -> str:
+                  ocr_notes: list[str] | None = None, ocr_error: str = "") -> str:
+        from .connectors.local_ocr import model_available
+
         values = values or {}
         return _env.get_template("app_form.html.j2").render(
+            ocr_error=ocr_error, photo_ocr=model_available(),
             folios=mock_folios() if self.mock_mode else [], mock_mode=self.mock_mode,
             trim_required="mock" not in self.connectors.trim_notices.name,
             error=error, notice=notice, ocr_notes=ocr_notes or [],
@@ -162,24 +177,22 @@ class App:
         """Read the uploaded TRIM notice and return the form pre-filled for the owner to confirm."""
         upload = files.get("trim_file")
         if not upload:
-            return self.form_page("Choose your TRIM notice file first.", form)
-        from .connectors.local_ocr import LocalTrimReader
+            return self.form_page(values=form, ocr_error="Choose your TRIM notice file first.")
         from .connectors.ocr import media_type_for
 
         filename, ctype, data = upload
         try:
-            # The configured OCR connector's reader (local or Claude); local open-source OCR otherwise.
-            reader = self._trim_reader or getattr(self.connectors.trim_notices, "reader", None) or LocalTrimReader()
-            extraction = reader.extract(data, media_type_for(filename, ctype))
+            extraction = self.trim_reader().extract(data, media_type_for(filename, ctype))
         except Exception as e:  # any OCR failure falls back to manual entry
             reason = str(e)
             if "authentication" in reason.lower() or "api_key" in reason.lower():
                 reason = "no Anthropic API key is configured on this server"
-            return self.form_page(f"Couldn't read the notice automatically ({reason}). "
-                                  f"Please type the values from your notice below.", form)
+            return self.form_page(values=form, ocr_error=f"Couldn't read the notice automatically ({reason}). "
+                                                         f"Please type the values from your notice below.")
         if not extraction.is_trim_notice:
-            return self.form_page("That file doesn't look like a TRIM notice. Please check the upload "
-                                  "or type the values below.", form)
+            return self.form_page(values=form, ocr_notes=extraction.notes,
+                                  ocr_error="That file doesn't look like a TRIM notice. Please check the "
+                                            "upload or type the values below.")
         filled = dict(form)
         field_map = {"trim_just_value": extraction.just_value, "trim_assessed_value": extraction.assessed_value,
                      "trim_taxable_value": extraction.taxable_value,
@@ -193,6 +206,10 @@ class App:
             filled["folio"] = [extraction.folio]
         if extraction.tax_year:
             filled["tax_year"] = [str(extraction.tax_year)]
+        found = [k for k, val in field_map.items() if val is not None]
+        if not found:
+            return self.form_page(values=filled, ocr_notes=extraction.notes,
+                                  ocr_error="We couldn't find any values on this notice. Please type them below.")
         notice = "We read these values from your notice. Check each one against the notice before building."
         if extraction.missing():
             notice += f" Some values couldn't be read: {', '.join(extraction.missing())}."

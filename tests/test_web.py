@@ -114,3 +114,39 @@ def test_read_my_notice_works_without_api_key(tmp_path):
     assert 'value="655000"' in page and 'value="15.9288"' in page and 'value="2026-09-18"' in page
     assert 'name="folio" type="text"' in page and 'value="30-4019-001-0100"' in page
     assert "Text source: PDF text layer." in page
+
+
+def test_pdf_reader_dependencies_are_in_base_install():
+    import tomllib
+    from pathlib import Path
+
+    deps = tomllib.loads((Path(__file__).resolve().parents[1] / "pyproject.toml").read_text())["project"]["dependencies"]
+    names = {d.split(">")[0].split("=")[0] for d in deps}
+    assert {"pypdf", "pypdfium2", "pillow"} <= names
+
+
+def test_reader_errors_show_in_trim_section_and_reader_is_reused(tmp_path):
+    app = App(tmp_path)
+    page = app.extract_trim(form(), {"trim_file": ("x.docx", "application/msword", b"x")})
+    trim_section = page[page.index('id="trim"'):page.index("3. About you")]
+    assert "Couldn&#39;t read the notice automatically" in trim_section
+    assert app.trim_reader() is app.trim_reader()
+
+
+def test_no_values_found_is_reported(tmp_path):
+    from PIL import Image
+    import io
+
+    class BlankEngine:
+        model_id = "fake"
+
+        def image_to_text(self, image):
+            return "NOTICE OF PROPOSED PROPERTY TAXES"
+
+    from taxappeal.connectors.local_ocr import LocalTrimReader
+
+    buf = io.BytesIO()
+    Image.new("RGB", (20, 20)).save(buf, format="PNG")
+    page = App(tmp_path, trim_reader=LocalTrimReader(BlankEngine())).extract_trim(
+        form(), {"trim_file": ("n.png", "image/png", buf.getvalue())})
+    assert "couldn&#39;t find any values" in page

@@ -12,7 +12,6 @@
   <p class="muted">Enter your property and we'll check whether an appeal is worth it, then build the evidence packet and a step-by-step guide.</p>
   {% if mock_mode %}<div class="mock"><strong>Mock data:</strong> only the 4 fictional properties listed are available. Start the server with <code>TAXAPPEAL_CONNECTORS=property_records=dor,sales=dor</code> to use the state roll.</div>{% endif %}
   {% if error %}<p class="error">{{ error }}</p>{% endif %}
-  {% if notice %}<p class="mock">{{ notice }}</p>{% endif %}
 
   <form method="post" action="/generate" enctype="multipart/form-data">
     <input type="hidden" name="tax_year" value="{{ v('tax_year', '2026') }}">
@@ -27,14 +26,17 @@
       <p class="muted" style="font-size:13px;margin:6px 0 0">Your folio number is on your TRIM notice ("Notice of Proposed Property Taxes") and on the Property Appraiser's website.</p>
     </section>
 
-    <section class="card">
+    <section class="card" id="trim">
       <h2>2. Your TRIM notice</h2>
       <p class="muted" style="font-size:13px;margin-top:0">Upload a PDF or photo and we'll read the values for you, or type them in.{% if not trim_required %} (Optional with mock data.){% endif %}</p>
       <div class="upload">
         <input type="file" name="trim_file" id="trim_file" accept="application/pdf,image/*" aria-label="TRIM notice file">
-        <button type="submit" class="secondary" id="read_notice" formaction="/extract" formnovalidate>Read my notice</button>
+        <button type="submit" class="secondary" id="read_notice" formaction="/extract#trim" formnovalidate>Read my notice</button>
         <span id="reading" class="muted" role="status" hidden>Reading your notice… photos can take a minute.</span>
       </div>
+      {% if not photo_ocr %}<p class="muted" style="font-size:12px;margin:6px 0 0">PDFs downloaded from the Property Appraiser are read directly. To read photos or scanned PDFs, install the OCR model: <code>pip install -e '.[local-ocr]'</code></p>{% endif %}
+      {% if ocr_error %}<p class="error" style="margin-top:12px">{{ ocr_error }}</p>{% endif %}
+      {% if notice %}<p class="mock" style="margin-top:12px">{{ notice }}</p>{% endif %}
       {% if ocr_notes %}<ul class="muted" style="font-size:13px">{% for n in ocr_notes %}<li>{{ n }}</li>{% endfor %}</ul>{% endif %}
       <div class="grid" style="margin-top:14px">
         <div><label for="trim_just_value">Market (just) value, this year</label><input id="trim_just_value" name="trim_just_value" type="text" inputmode="numeric" value="{{ v('trim_just_value') }}"></div>

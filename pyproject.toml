@@ -7,12 +7,14 @@ name = "taxappeal"
 version = "0.1.0"
 description = "Generate Miami-Dade VAB property tax appeal packets for homeowners"
 requires-python = ">=3.11"
-dependencies = ["pydantic>=2", "jinja2>=3"]
+# pypdf/pypdfium2/pillow: reading TRIM notice PDFs (text layer) works out of the box.
+dependencies = ["pydantic>=2", "jinja2>=3", "pypdf>=4", "pypdfium2>=4", "pillow>=10"]
 
 [project.optional-dependencies]
 dev = ["pytest"]
 claude = ["anthropic>=1.13"]
-local-ocr = ["pypdf>=4", "pypdfium2>=4", "pillow>=10", "transformers>=4.56", "torch>=2.2"]
+# Photos and scanned PDFs: GOT-OCR 2.0 run locally via Hugging Face transformers.
+local-ocr = ["transformers>=4.56", "torch>=2.2"]
 
 [project.scripts]
 taxappeal = "taxappeal.cli:main"

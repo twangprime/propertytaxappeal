@@ -133,6 +133,13 @@ def parse_trim_text(text: str) -> TrimExtraction:
     return extraction
 
 
+def model_available() -> bool:
+    """True when torch and transformers are installed (photos and scanned PDFs can be read)."""
+    from importlib.util import find_spec
+
+    return find_spec("torch") is not None and find_spec("transformers") is not None
+
+
 class GotOcrEngine:
     """Page OCR with GOT-OCR 2.0 via Hugging Face transformers. Loads the model on first use."""
 
