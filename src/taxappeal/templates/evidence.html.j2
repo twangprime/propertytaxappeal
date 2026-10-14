@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VAB Evidence – {{ p.property.folio }}</title>
+<style>{% include "base.css" %}</style>
+</head>
+<body><main>
+
+{# ---------- Cover ---------- #}
+<section class="page">
+  {% if is_mock %}<div class="mock"><strong>MOCK DATA.</strong> Generated from fictional development data. Not for filing.</div>{% endif %}
+  <p class="muted">Before the Miami-Dade County Value Adjustment Board · Tax Year {{ v.tax_year }}</p>
+  <h1>Petitioner's Evidence of Market Value</h1>
+  <table class="kv">
+    <tr><td>Petitioner</td><td>{{ p.case.owner.name }}</td></tr>
+    <tr><td>Folio</td><td>{{ p.property.folio }}</td></tr>
+    <tr><td>Property address</td><td>{{ p.property.address }}</td></tr>
+    <tr><td>Petition number</td><td>________________</td></tr>
+    <tr><td>Hearing date</td><td>{{ p.case.hearing_date.strftime("%B %d, %Y") if p.case.hearing_date else "________________" }}</td></tr>
+  </table>
+  <div class="stats">
+    <div class="stat"><div class="label">Property Appraiser just value</div><div class="value">{{ v.current_just_value|money }}</div></div>
+    <div class="stat"><div class="label">Market value{{ " less repairs" if v.repair_deduction else "" }}</div><div class="value">{{ v.adjusted_market_value|money }}</div></div>
+    <div class="stat"><div class="label">Requested just value</div><div class="value">{{ v.requested_just_value|money }}</div></div>
+  </div>
+  <div class="callout">{{ p.narrative.one_line_argument }}</div>
+  <h2>Summary</h2>
+  <p>{{ p.narrative.summary }}</p>
+  <h2>Exhibit Index</h2>
+  <table>
+    <tr><th>Exhibit</th><th>Description</th></tr>
+    <tr><td>A</td><td>Subject property</td></tr>
+    <tr><td>B</td><td>Comparable sales grid and adjustments</td></tr>
+    <tr><td>C</td><td>Comparable sales location map</td></tr>
+    <tr><td>D</td><td>Value reconciliation and cost-of-sale adjustment</td></tr>
+    {% if p.case.repair_estimates %}<tr><td>E</td><td>Condition and repair estimates</td></tr>{% endif %}
+    <tr><td>{{ "F" if p.case.repair_estimates else "E" }}</td><td>Assessment review</td></tr>
+  </table>
+  <p class="muted" style="font-size:8.5pt">Prepared by the property owner as evidence of market value. This is a comparative market analysis, not an appraisal by a licensed appraiser.</p>
+</section>
+
+{# ---------- Exhibit A ---------- #}
+<section class="page">
+  <h2>Exhibit A – Subject Property</h2>
+  {% set b = p.property.building %}
+  <table class="kv">
+    <tr><td>Folio</td><td>{{ p.property.folio }}</td></tr>
+    <tr><td>Address</td><td>{{ p.property.address }}</td></tr>
+    <tr><td>Neighborhood / municipality</td><td>{{ p.property.location.neighborhood }} · {{ p.property.location.municipality }}</td></tr>
+    <tr><td>Property type</td><td>{{ b.use.value.replace("_", " ").title() }}</td></tr>
+    <tr><td>Living area</td><td>{{ "{:,}".format(b.living_sqft) }} sqft</td></tr>
+    {% if b.lot_sqft %}<tr><td>Lot size</td><td>{{ "{:,}".format(b.lot_sqft) }} sqft</td></tr>{% endif %}
+    <tr><td>Year built</td><td>{{ b.year_built }}</td></tr>
+    <tr><td>Bedrooms / bathrooms</td><td>{{ b.bedrooms }} / {{ b.bathrooms|round(1) }}</td></tr>
+    <tr><td>Pool</td><td>{{ "Yes" if b.pool else "No" }}</td></tr>
+    <tr><td>Condition (1–5)</td><td>{{ b.condition }}</td></tr>
+    <tr><td>Homestead</td><td>{{ "Yes" if p.property.homestead else "No" }}</td></tr>
+  </table>
+  <h3>Assessment history</h3>
+  <table>
+    <tr><th>Tax year</th><th class="num">Just value</th><th class="num">Assessed value</th><th class="num">Taxable value</th></tr>
+    {% for a in p.property.assessments %}
+    <tr><td>{{ a.tax_year }}</td><td class="num">{{ a.just_value|money }}</td><td class="num">{{ a.assessed_value|money }}</td><td class="num">{{ a.taxable_value|money }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+
+{# ---------- Exhibit B ---------- #}
+<section class="page">
+  <h2>Exhibit B – Comparable Sales Grid</h2>
+  <p class="muted" style="font-size:9pt">Qualified (arm's-length) sales from the 18 months before the January 1, {{ v.tax_year }} valuation date. Adjustments are applied to each comparable to reflect the subject.</p>
+  <div class="overflow">
+  <table>
+    <tr><th></th><th>Subject</th>{% for c in v.comps %}<th>Comp {{ loop.index }}</th>{% endfor %}</tr>
+    <tr><td>Address</td><td>{{ p.property.address }}</td>{% for c in v.comps %}<td>{{ c.sale.address }}</td>{% endfor %}</tr>
+    <tr><td>Folio</td><td>{{ p.property.folio }}</td>{% for c in v.comps %}<td>{{ c.sale.folio }}</td>{% endfor %}</tr>
+    <tr><td>Sale date</td><td>—</td>{% for c in v.comps %}<td>{{ c.sale.sale_date.strftime("%m/%d/%Y") }}</td>{% endfor %}</tr>
+    <tr><td>Sale price</td><td>—</td>{% for c in v.comps %}<td class="num">{{ c.sale.price|money }}</td>{% endfor %}</tr>
+    <tr><td>Distance</td><td>—</td>{% for c in v.comps %}<td class="num">{{ c.distance_mi }} mi</td>{% endfor %}</tr>
+    <tr><td>Living sqft</td><td class="num">{{ "{:,}".format(b.living_sqft) }}</td>{% for c in v.comps %}<td class="num">{{ "{:,}".format(c.sale.building.living_sqft) }}</td>{% endfor %}</tr>
+    {% if b.lot_sqft %}<tr><td>Lot sqft</td><td class="num">{{ "{:,}".format(b.lot_sqft) }}</td>{% for c in v.comps %}<td class="num">{{ "{:,}".format(c.sale.building.lot_sqft) }}</td>{% endfor %}</tr>{% endif %}
+    <tr><td>Year built</td><td class="num">{{ b.year_built }}</td>{% for c in v.comps %}<td class="num">{{ c.sale.building.year_built }}</td>{% endfor %}</tr>
+    <tr><td>Bed / bath</td><td class="num">{{ b.bedrooms }} / {{ b.bathrooms }}</td>{% for c in v.comps %}<td class="num">{{ c.sale.building.bedrooms }} / {{ c.sale.building.bathrooms }}</td>{% endfor %}</tr>
+    {% if b.use.value != "condo" %}<tr><td>Pool</td><td>{{ "Yes" if b.pool else "No" }}</td>{% for c in v.comps %}<td>{{ "Yes" if c.sale.building.pool else "No" }}</td>{% endfor %}</tr>{% endif %}
+    <tr><td>Condition</td><td class="num">{{ b.condition }}</td>{% for c in v.comps %}<td class="num">{{ c.sale.building.condition }}</td>{% endfor %}</tr>
+    <tr><th colspan="{{ v.comps|length + 2 }}">Adjustments</th></tr>
+    {% for f in factors %}
+    <tr><td>{{ f }}</td><td></td>{% for c in v.comps %}{% set adj = c.adjustments|selectattr("factor", "equalto", f)|list %}<td class="num">{{ (adj[0].amount if adj else 0)|signed_money }}</td>{% endfor %}</tr>
+    {% endfor %}
+    <tr><td>Net adjustment</td><td></td>{% for c in v.comps %}<td class="num">{{ c.net_adjustment_pct|pct(1) }}</td>{% endfor %}</tr>
+    <tr><td>Gross adjustment</td><td></td>{% for c in v.comps %}<td class="num">{{ c.gross_adjustment_pct|pct(1) }}</td>{% endfor %}</tr>
+    <tr class="total"><td>Adjusted price</td><td></td>{% for c in v.comps %}<td class="num">{{ c.adjusted_price|money }}</td>{% endfor %}</tr>
+    <tr><td>Weight</td><td></td>{% for c in v.comps %}<td class="num">{{ c.weight|pct }}</td>{% endfor %}</tr>
+  </table>
+  </div>
+  {% if p.case.repair_estimates %}<p class="muted" style="font-size:9pt">The subject's below-average condition is accounted for by the documented repair costs in Exhibit E, not by a condition adjustment, so it is not counted twice.</p>{% endif %}
+  <h3>Adjustment basis</h3>
+  <table>
+    <tr><th>Comp</th><th>Factor</th><th class="num">Amount</th><th>Basis</th></tr>
+    {% for c in v.comps %}{% set i = loop.index %}{% for a in c.adjustments %}
+    <tr><td>{{ i }}</td><td>{{ a.factor }}</td><td class="num">{{ a.amount|signed_money }}</td><td>{{ a.explanation }}</td></tr>
+    {% endfor %}{% endfor %}
+  </table>
+</section>
+
+{# ---------- Exhibit C ---------- #}
+<section class="page">
+  <h2>Exhibit C – Location of Comparable Sales</h2>
+  <svg viewBox="0 0 320 320" width="320" height="320" role="img" aria-label="Relative location of subject and comparable sales" style="border:0.5pt solid #d5dae0">
+    {% for pt in map_points %}
+      {% if pt.label == "S" %}
+      <rect x="{{ pt.x - 8 }}" y="{{ pt.y - 8 }}" width="16" height="16" fill="#a3271f"/>
+      <text x="{{ pt.x }}" y="{{ pt.y + 4 }}" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">S</text>
+      {% else %}
+      <circle cx="{{ pt.x }}" cy="{{ pt.y }}" r="9" fill="#1f4e79"/>
+      <text x="{{ pt.x }}" y="{{ pt.y + 4 }}" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">{{ pt.label }}</text>
+      {% endif %}
+    {% endfor %}
+  </svg>
+  <p class="muted" style="font-size:9pt">S = subject. Numbers match the comparable columns in Exhibit B. North is up; schematic, not to a street map.</p>
+  <table>
+    <tr><th>Comp</th><th>Why selected</th></tr>
+    {% for c in v.comps %}<tr><td>{{ loop.index }}</td><td>{{ p.narrative.comp_explanations[c.sale.folio] }}</td></tr>{% endfor %}
+  </table>
+</section>
+
+{# ---------- Exhibit D ---------- #}
+<section class="page">
+  <h2>Exhibit D – Reconciliation</h2>
+  <table>
+    <tr><td>Weighted average of adjusted sale prices (weights favor the least-adjusted sales)</td><td class="num">{{ v.indicated_market_value|money }}</td></tr>
+    <tr><td>Range of adjusted prices</td><td class="num">{{ v.adjusted_price_low|money }} – {{ v.adjusted_price_high|money }}</td></tr>
+    {% if v.repair_deduction %}<tr><td>Less: documented repairs needed as of January 1 (Exhibit E)</td><td class="num">−{{ v.repair_deduction|money }}</td></tr>{% endif %}
+    <tr class="total"><td>Indicated market value</td><td class="num">{{ v.adjusted_market_value|money }}</td></tr>
+    <tr><td>Less: cost-of-sale adjustment, Fla. Stat. 193.011(8) ({{ v.cost_of_sale_pct|pct }})</td><td class="num">−{{ (v.adjusted_market_value - v.requested_just_value)|money }}</td></tr>
+    <tr class="total"><td>Requested just value</td><td class="num">{{ v.requested_just_value|money }}</td></tr>
+    <tr><td>Property Appraiser's just value</td><td class="num">{{ v.current_just_value|money }}</td></tr>
+  </table>
+</section>
+
+{% if p.case.repair_estimates %}
+<section class="page">
+  <h2>Exhibit E – Condition and Repair Estimates</h2>
+  <table>
+    <tr><th>Item</th><th>Source</th><th class="num">Amount</th></tr>
+    {% for r in p.case.repair_estimates %}<tr><td>{{ r.description }}</td><td>{{ r.source }}</td><td class="num">{{ r.amount|money }}</td></tr>{% endfor %}
+    <tr class="total"><td colspan="2">Total</td><td class="num">{{ v.repair_deduction|money }}</td></tr>
+  </table>
+  <p class="muted" style="font-size:9pt">Attach the signed estimates and dated photos behind this page.</p>
+</section>
+{% endif %}
+
+<section class="page">
+  <h2>Exhibit {{ "F" if p.case.repair_estimates else "E" }} – Assessment Review</h2>
+  <ul>
+  {% for a in v.audits %}
+    <li class="{{ 'issue' if a.severity == 'issue' else '' }}">{{ a.message }}</li>
+  {% endfor %}
+  </ul>
+</section>
+
+</main></body>
+</html>

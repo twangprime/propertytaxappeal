@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "taxappeal"
+version = "0.1.0"
+description = "Generate Miami-Dade VAB property tax appeal packets for homeowners"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2", "jinja2>=3"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+taxappeal = "taxappeal.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+taxappeal = ["templates/*", "mock_data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

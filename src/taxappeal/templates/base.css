@@ -1,0 +1,32 @@
+@page { size: Letter; margin: 0.6in; }
+:root { --ink: #1b1f24; --muted: #5b6470; --rule: #d5dae0; --accent: #1f4e79; --bad: #a3271f; --good: #2e6b34; --wash: #f3f5f8; }
+* { box-sizing: border-box; }
+body { font-family: "Georgia", "Times New Roman", serif; color: var(--ink); background: #fff; font-size: 11pt; line-height: 1.45; margin: 0; }
+main { max-width: 7.3in; margin: 0 auto; padding: 0 16px; }
+h1, h2, h3, th, .label, .stat, table { font-family: "Helvetica Neue", Arial, sans-serif; }
+h1 { font-size: 20pt; margin: 0 0 4pt; color: var(--accent); }
+h2 { font-size: 13pt; color: var(--accent); border-bottom: 1.5pt solid var(--accent); padding-bottom: 3pt; margin: 18pt 0 8pt; }
+h3 { font-size: 11pt; margin: 12pt 0 4pt; }
+.page { page-break-after: always; padding-top: 8pt; }
+.page:last-child { page-break-after: auto; }
+.muted { color: var(--muted); }
+.mock { background: #fff3cd; border: 1px solid #e0b100; padding: 6pt 10pt; font-family: Arial, sans-serif; font-size: 9pt; margin: 8pt 0; }
+table { border-collapse: collapse; width: 100%; font-size: 8.5pt; }
+th, td { border: 0.5pt solid var(--rule); padding: 3pt 5pt; vertical-align: top; }
+th { background: var(--wash); text-align: left; font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr.total td { font-weight: 700; background: var(--wash); }
+.kv td:first-child { width: 42%; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8pt; margin: 10pt 0; }
+.stat { border: 0.5pt solid var(--rule); padding: 8pt; }
+.stat .label { font-size: 8pt; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.stat .value { font-size: 15pt; font-weight: 700; }
+.issue { color: var(--bad); }
+.ok { color: var(--good); }
+.callout { border-left: 3pt solid var(--accent); background: var(--wash); padding: 8pt 12pt; margin: 10pt 0; }
+.badge { display: inline-block; padding: 2pt 8pt; font-family: Arial, sans-serif; font-weight: 700; color: #fff; border-radius: 3pt; }
+.badge.go { background: var(--good); } .badge.maybe { background: #9a6b00; } .badge.no_go { background: var(--bad); }
+pre.script { white-space: pre-wrap; font-family: inherit; background: var(--wash); padding: 10pt; }
+.unverified { color: #9a6b00; font-size: 8.5pt; }
+svg text { font-family: Arial, sans-serif; }
+.overflow { overflow-x: auto; }

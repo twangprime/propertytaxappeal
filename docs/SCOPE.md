@@ -131,10 +131,10 @@ A deterministic pipeline does the work, and an LLM agent handles the judgment an
 4. **Model hallucination.** The narrative layer may only reference fields from `ValuationResult`. Add a validation pass that every number in the PDF matches the source data.
 5. **Downside risk to owners.** The VAB can't raise the value above the PA's figure in a petition hearing, but a weak case still costs the fee and time. The go/no-go gate should be conservative.
 6. **Rule changes.** The 2026 DR-486 was in draft (07.15.26). Keep the form version, deadlines, and fees in per-tax-year config, not code.
-7. **Open questions for the owner of this project:**
-   - Who is the user: homeowners directly, tax agents and condo associations, or both? This decides the batch-vs-guided UX.
-   - Business model: flat fee, contingency (% of savings), or free tool?
-   - Should v1 include exemption and portability petitions, or value only?
+7. **Decisions so far:**
+   - **Target user: homeowners** (2026-10-14). The UX is guided and works on one folio at a time. Agent and batch features are out of scope.
+   - **Build approach:** an MVP on mock data first (see `README.md`), then replace the connectors one by one.
+8. **Still open:** the business model (flat fee, % of savings, or free), and whether v1 should cover exemption and portability petitions or value appeals only.
 
 ---
 

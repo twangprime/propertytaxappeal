@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Appeal Guide – {{ p.property.folio }}</title>
+<style>{% include "base.css" %}</style>
+</head>
+<body><main>
+{% set d = p.decision %}
+<section class="page">
+  {% if is_mock %}<div class="mock"><strong>MOCK DATA.</strong> Generated from fictional development data. Not for filing.</div>{% endif %}
+  <p class="muted">For the homeowner only. Do not submit this guide to the VAB.</p>
+  <h1>Your Property Tax Appeal Guide</h1>
+  <p>{{ p.property.address }} · Folio {{ p.property.folio }} · Tax year {{ v.tax_year }}</p>
+
+  <h2>Should you appeal?</h2>
+  <p><span class="badge {{ d.recommendation.value }}">{{ {"go": "YES, APPEAL", "maybe": "OPTIONAL", "no_go": "NOT RECOMMENDED"}[d.recommendation.value] }}</span></p>
+  <ul>{% for r in d.reasons %}<li>{{ r }}</li>{% endfor %}</ul>
+  <div class="stats">
+    <div class="stat"><div class="label">Taxable value now</div><div class="value">{{ v.current_taxable_value|money }}</div></div>
+    <div class="stat"><div class="label">Taxable value if you win</div><div class="value">{{ d.new_taxable_value|money }}</div></div>
+    <div class="stat"><div class="label">Est. savings / year</div><div class="value">{{ d.estimated_annual_savings|money }}</div></div>
+  </div>
+  <p class="muted" style="font-size:9pt">Savings estimate uses the combined proposed millage on your TRIM notice ({{ p.trim.total_millage }} mills) and ignores differences in how school-district levies treat some exemptions. Case strength: <strong>{{ v.confidence }}</strong> ({{ v.comps|length }} comparable sales; adjusted prices vary {{ v.coefficient_of_variation|pct(1) }}).</p>
+
+  <h2>Key dates</h2>
+  <table>
+    <tr><th>Date</th><th>What</th><th>Details</th></tr>
+    {% for dl in p.deadlines %}
+    <tr><td>{{ dl.due.strftime("%a %b %d, %Y") }}</td><td>{{ dl.name }}{% if not dl.verified %} <span class="unverified">(unverified)</span>{% endif %}</td><td>{{ dl.description }}</td></tr>
+    {% endfor %}
+  </table>
+  <p class="muted" style="font-size:9pt">Import <code>deadlines.ics</code> into your calendar.{% if p.case.petition_filed %} Your petition is already filed.{% endif %}</p>
+</section>
+
+<section class="page">
+  <h2>Petition worksheet (DR-486)</h2>
+  <p>Enter these values when filing online through the Miami-Dade Clerk's VAB portal. Review every field. You are responsible for what you file.</p>
+  <table class="kv">
+    {% for k, val in p.petition_fields.items() %}<tr><td>{{ k }}</td><td>{{ val }}</td></tr>{% endfor %}
+  </table>
+</section>
+
+{% if d.recommendation.value != "no_go" %}
+<section class="page">
+  <h2>Hearing script (2–3 minutes)</h2>
+  <pre class="script">{{ p.narrative.hearing_script }}</pre>
+  <h2>If the Property Appraiser says…</h2>
+  <table>
+    <tr><th style="width:38%">They may argue</th><th>You can respond</th></tr>
+    {% for arg, resp in p.narrative.rebuttals %}<tr><td>{{ arg }}</td><td>{{ resp }}</td></tr>{% endfor %}
+  </table>
+  <h2>Checklist</h2>
+  <ul>
+    <li>Print the evidence packet (<code>evidence.pdf</code>) and bring 3 copies to an in-person hearing.</li>
+    <li>Send the evidence packet to the Property Appraiser by the evidence deadline above, and keep proof you sent it.</li>
+    <li>Upload the evidence packet to the VAB portal before the upload deadline.</li>
+    {% if p.case.repair_estimates %}<li>Attach signed contractor estimates and dated photos behind Exhibit E.</li>{% endif %}
+    <li>Pay at least 75% of your taxes by March 31 while the petition is pending.</li>
+  </ul>
+</section>
+{% endif %}
+
+<section class="page">
+  <h2>Data sources</h2>
+  <table class="kv">{% for k, s in p.data_sources.items() %}<tr><td>{{ k.replace("_", " ") }}</td><td>{{ s }}</td></tr>{% endfor %}</table>
+  <p class="muted" style="font-size:9pt">This guide is an automated estimate, not legal advice or a licensed appraisal.</p>
+</section>
+</main></body>
+</html>

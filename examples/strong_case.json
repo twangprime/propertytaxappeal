@@ -1,0 +1,11 @@
+{
+  "folio": "30-4019-001-0100",
+  "tax_year": 2026,
+  "owner": {"name": "Jordan Sample", "mailing_address": "1200 Mockingbird St, Miami, FL 33155", "phone": "305-555-0100", "email": "jordan@example.com"},
+  "petition_filed": true,
+  "hearing_date": "2026-11-18",
+  "repair_estimates": [
+    {"description": "Roof replacement (end of life, active leaks)", "amount": 28000, "source": "Example Roofing Co. (mock)"},
+    {"description": "Cast-iron drain line replacement", "amount": 9500, "source": "Example Plumbing LLC (mock)"}
+  ]
+}

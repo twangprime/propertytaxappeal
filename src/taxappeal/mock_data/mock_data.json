@@ -1,0 +1,1929 @@
+{
+ "_note": "Fictional data for development only.",
+ "properties": [
+  {
+   "folio": "30-4019-001-0100",
+   "address": "1200 Mockingbird St, Miami, FL 33155 (MOCK)",
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1850,
+    "lot_sqft": 7500,
+    "year_built": 1961,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.748,
+    "lon": -80.333,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   },
+   "homestead": true,
+   "last_sale_date": "2025-03-14",
+   "exemptions_total": 50000,
+   "assessments": [
+    {
+     "tax_year": 2026,
+     "just_value": 655000,
+     "assessed_value": 655000,
+     "taxable_value": 605000
+    },
+    {
+     "tax_year": 2025,
+     "just_value": 640000,
+     "assessed_value": 610000,
+     "taxable_value": 560000
+    }
+   ]
+  },
+  {
+   "folio": "30-4139-002-0450",
+   "address": "88 Sample Ave #1204, Miami, FL 33131 (MOCK)",
+   "building": {
+    "use": "condo",
+    "living_sqft": 1010,
+    "lot_sqft": 0,
+    "year_built": 2012,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.76,
+    "lon": -80.193,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   },
+   "homestead": false,
+   "last_sale_date": null,
+   "exemptions_total": 0,
+   "assessments": [
+    {
+     "tax_year": 2026,
+     "just_value": 455000,
+     "assessed_value": 455000,
+     "taxable_value": 455000
+    },
+    {
+     "tax_year": 2025,
+     "just_value": 440000,
+     "assessed_value": 440000,
+     "taxable_value": 440000
+    }
+   ]
+  },
+  {
+   "folio": "30-5911-003-0780",
+   "address": "15400 Fixture Ln, Miami, FL 33186 (MOCK)",
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2100,
+    "lot_sqft": 7200,
+    "year_built": 1986,
+    "bedrooms": 4,
+    "bathrooms": 2.5,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.695,
+    "lon": -80.409,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   },
+   "homestead": true,
+   "last_sale_date": null,
+   "exemptions_total": 50000,
+   "assessments": [
+    {
+     "tax_year": 2026,
+     "just_value": 640000,
+     "assessed_value": 330000,
+     "taxable_value": 280000
+    },
+    {
+     "tax_year": 2025,
+     "just_value": 600000,
+     "assessed_value": 300000,
+     "taxable_value": 250000
+    }
+   ]
+  },
+  {
+   "folio": "30-5911-003-0910",
+   "address": "15520 Fixture Ln, Miami, FL 33186 (MOCK)",
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1950,
+    "lot_sqft": 7000,
+    "year_built": 1982,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.695,
+    "lon": -80.409,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   },
+   "homestead": true,
+   "last_sale_date": null,
+   "exemptions_total": 50000,
+   "assessments": [
+    {
+     "tax_year": 2026,
+     "just_value": 720000,
+     "assessed_value": 262650,
+     "taxable_value": 212650
+    },
+    {
+     "tax_year": 2025,
+     "just_value": 640000,
+     "assessed_value": 255000,
+     "taxable_value": 205000
+    }
+   ]
+  }
+ ],
+ "sales": [
+  {
+   "folio": "30-4900-001-0000",
+   "address": "4438 Sample St, Miami, FL (MOCK)",
+   "sale_date": "2024-11-25",
+   "price": 383900,
+   "qualified": false,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1410,
+    "lot_sqft": 6050,
+    "year_built": 1971,
+    "bedrooms": 2,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.75609,
+    "lon": -80.33383,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0001",
+   "address": "5440 Example Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-12-07",
+   "price": 848700,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2240,
+    "lot_sqft": 8100,
+    "year_built": 1966,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.74263,
+    "lon": -80.3352,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0002",
+   "address": "5512 Demo St, Miami, FL (MOCK)",
+   "sale_date": "2024-11-12",
+   "price": 879400,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2170,
+    "lot_sqft": 8100,
+    "year_built": 1979,
+    "bedrooms": 2,
+    "bathrooms": 2.5,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.73792,
+    "lon": -80.3535,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0003",
+   "address": "8534 Sample Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-08-08",
+   "price": 964300,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2560,
+    "lot_sqft": 9850,
+    "year_built": 1962,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.73919,
+    "lon": -80.32456,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0004",
+   "address": "8030 Demo St, Miami, FL (MOCK)",
+   "sale_date": "2024-07-20",
+   "price": 674300,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1510,
+    "lot_sqft": 9750,
+    "year_built": 1977,
+    "bedrooms": 2,
+    "bathrooms": 2.5,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.74403,
+    "lon": -80.33484,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0005",
+   "address": "9472 Example Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-02-10",
+   "price": 992400,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2490,
+    "lot_sqft": 8100,
+    "year_built": 1964,
+    "bedrooms": 4,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.76911,
+    "lon": -80.32501,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0006",
+   "address": "5021 Testing St, Miami, FL (MOCK)",
+   "sale_date": "2024-07-14",
+   "price": 637800,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1680,
+    "lot_sqft": 8150,
+    "year_built": 1979,
+    "bedrooms": 4,
+    "bathrooms": 2.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.73026,
+    "lon": -80.32369,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0007",
+   "address": "6774 Mockingbird Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-10-17",
+   "price": 689200,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1850,
+    "lot_sqft": 9250,
+    "year_built": 1966,
+    "bedrooms": 3,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.72515,
+    "lon": -80.33127,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0008",
+   "address": "4401 Mockingbird St, Miami, FL (MOCK)",
+   "sale_date": "2025-02-09",
+   "price": 795900,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2270,
+    "lot_sqft": 9650,
+    "year_built": 1952,
+    "bedrooms": 3,
+    "bathrooms": 1.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.74072,
+    "lon": -80.34866,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0009",
+   "address": "1251 Testing Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-12-22",
+   "price": 767900,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1990,
+    "lot_sqft": 7400,
+    "year_built": 1953,
+    "bedrooms": 4,
+    "bathrooms": 1.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.73204,
+    "lon": -80.32309,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0010",
+   "address": "1567 Testing St, Miami, FL (MOCK)",
+   "sale_date": "2025-11-09",
+   "price": 626400,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1790,
+    "lot_sqft": 6550,
+    "year_built": 1957,
+    "bedrooms": 2,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.73495,
+    "lon": -80.32899,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0011",
+   "address": "1872 Testing Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-08-21",
+   "price": 592700,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1550,
+    "lot_sqft": 8700,
+    "year_built": 1971,
+    "bedrooms": 3,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.73313,
+    "lon": -80.33956,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0012",
+   "address": "5652 Placeholder St, Miami, FL (MOCK)",
+   "sale_date": "2025-12-09",
+   "price": 766600,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1970,
+    "lot_sqft": 8400,
+    "year_built": 1958,
+    "bedrooms": 4,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.73759,
+    "lon": -80.33217,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0013",
+   "address": "5563 Placeholder Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-07-27",
+   "price": 581500,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1520,
+    "lot_sqft": 8200,
+    "year_built": 1983,
+    "bedrooms": 2,
+    "bathrooms": 2.5,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.73714,
+    "lon": -80.32607,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0014",
+   "address": "497 Stub St, Miami, FL (MOCK)",
+   "sale_date": "2025-11-10",
+   "price": 964100,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2450,
+    "lot_sqft": 9400,
+    "year_built": 1981,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.76882,
+    "lon": -80.33498,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0015",
+   "address": "8587 Stub Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-10-28",
+   "price": 946300,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2530,
+    "lot_sqft": 8450,
+    "year_built": 1979,
+    "bedrooms": 3,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.74108,
+    "lon": -80.34711,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0016",
+   "address": "4804 Sample St, Miami, FL (MOCK)",
+   "sale_date": "2025-02-15",
+   "price": 738400,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1930,
+    "lot_sqft": 6200,
+    "year_built": 1952,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.75343,
+    "lon": -80.31219,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0017",
+   "address": "9957 Example Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-10-23",
+   "price": 601900,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1550,
+    "lot_sqft": 9150,
+    "year_built": 1963,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.74286,
+    "lon": -80.33681,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0018",
+   "address": "8634 Sample St, Miami, FL (MOCK)",
+   "sale_date": "2025-11-07",
+   "price": 821300,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2150,
+    "lot_sqft": 9150,
+    "year_built": 1959,
+    "bedrooms": 3,
+    "bathrooms": 2.5,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.73499,
+    "lon": -80.31399,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0019",
+   "address": "2985 Sample Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-03-03",
+   "price": 918400,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2430,
+    "lot_sqft": 6200,
+    "year_built": 1988,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.73313,
+    "lon": -80.32325,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0020",
+   "address": "1295 Demo St, Miami, FL (MOCK)",
+   "sale_date": "2025-09-13",
+   "price": 693500,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1590,
+    "lot_sqft": 6700,
+    "year_built": 1956,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.73314,
+    "lon": -80.33918,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0021",
+   "address": "7340 Sample Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-12-21",
+   "price": 634600,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1620,
+    "lot_sqft": 6750,
+    "year_built": 1978,
+    "bedrooms": 3,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.73068,
+    "lon": -80.31987,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0022",
+   "address": "9474 Stub St, Miami, FL (MOCK)",
+   "sale_date": "2025-07-30",
+   "price": 278700,
+   "qualified": false,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1470,
+    "lot_sqft": 9100,
+    "year_built": 1980,
+    "bedrooms": 4,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.75862,
+    "lon": -80.35143,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4900-001-0023",
+   "address": "8696 Mockingbird Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-07-30",
+   "price": 470900,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1370,
+    "lot_sqft": 7250,
+    "year_built": 1982,
+    "bedrooms": 4,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.75299,
+    "lon": -80.31037,
+    "neighborhood": "Westchester (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0000",
+   "address": "1139 Testing St, Miami, FL (MOCK)",
+   "sale_date": "2024-10-19",
+   "price": 525100,
+   "qualified": false,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2360,
+    "lot_sqft": 8250,
+    "year_built": 1993,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.68631,
+    "lon": -80.40272,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0001",
+   "address": "7711 Fixture Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-01-07",
+   "price": 776800,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2110,
+    "lot_sqft": 8150,
+    "year_built": 1981,
+    "bedrooms": 4,
+    "bathrooms": 2.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.70065,
+    "lon": -80.41513,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0002",
+   "address": "3629 Sample St, Miami, FL (MOCK)",
+   "sale_date": "2025-11-21",
+   "price": 685300,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2160,
+    "lot_sqft": 8450,
+    "year_built": 1992,
+    "bedrooms": 4,
+    "bathrooms": 2.5,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.68516,
+    "lon": -80.42419,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0003",
+   "address": "7133 Mockingbird Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-01-26",
+   "price": 678300,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1960,
+    "lot_sqft": 5500,
+    "year_built": 1980,
+    "bedrooms": 3,
+    "bathrooms": 3.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.71171,
+    "lon": -80.4082,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0004",
+   "address": "4529 Mockingbird St, Miami, FL (MOCK)",
+   "sale_date": "2024-09-18",
+   "price": 742500,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2100,
+    "lot_sqft": 6100,
+    "year_built": 1979,
+    "bedrooms": 3,
+    "bathrooms": 3.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.69414,
+    "lon": -80.38978,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0005",
+   "address": "6145 Mockingbird Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-08-10",
+   "price": 639200,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1760,
+    "lot_sqft": 6850,
+    "year_built": 1991,
+    "bedrooms": 4,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.71696,
+    "lon": -80.40442,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0006",
+   "address": "7736 Fixture St, Miami, FL (MOCK)",
+   "sale_date": "2025-05-25",
+   "price": 694000,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2100,
+    "lot_sqft": 8450,
+    "year_built": 1996,
+    "bedrooms": 4,
+    "bathrooms": 2.5,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.69073,
+    "lon": -80.38401,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0007",
+   "address": "4110 Demo Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-11-22",
+   "price": 810100,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2450,
+    "lot_sqft": 5800,
+    "year_built": 1992,
+    "bedrooms": 3,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.68137,
+    "lon": -80.39241,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0008",
+   "address": "9417 Mockingbird St, Miami, FL (MOCK)",
+   "sale_date": "2024-08-09",
+   "price": 427900,
+   "qualified": false,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1730,
+    "lot_sqft": 8100,
+    "year_built": 1990,
+    "bedrooms": 4,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.69235,
+    "lon": -80.40066,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0009",
+   "address": "7053 Stub Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-06-24",
+   "price": 438300,
+   "qualified": false,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1770,
+    "lot_sqft": 6400,
+    "year_built": 1991,
+    "bedrooms": 3,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.67872,
+    "lon": -80.41541,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0010",
+   "address": "717 Stub St, Miami, FL (MOCK)",
+   "sale_date": "2025-09-05",
+   "price": 551300,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1560,
+    "lot_sqft": 6150,
+    "year_built": 1993,
+    "bedrooms": 4,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.6939,
+    "lon": -80.39775,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0011",
+   "address": "4381 Placeholder Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-06-26",
+   "price": 890100,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2470,
+    "lot_sqft": 5650,
+    "year_built": 1977,
+    "bedrooms": 2,
+    "bathrooms": 1.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.70211,
+    "lon": -80.39642,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0012",
+   "address": "824 Mockingbird St, Miami, FL (MOCK)",
+   "sale_date": "2025-10-01",
+   "price": 952600,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2730,
+    "lot_sqft": 7100,
+    "year_built": 1992,
+    "bedrooms": 2,
+    "bathrooms": 2.5,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.69794,
+    "lon": -80.40979,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0013",
+   "address": "5047 Example Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-05-07",
+   "price": 816400,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2340,
+    "lot_sqft": 7900,
+    "year_built": 1996,
+    "bedrooms": 3,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.68572,
+    "lon": -80.40655,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0014",
+   "address": "7740 Demo St, Miami, FL (MOCK)",
+   "sale_date": "2024-09-26",
+   "price": 794700,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2300,
+    "lot_sqft": 8700,
+    "year_built": 1991,
+    "bedrooms": 3,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.69783,
+    "lon": -80.42606,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0015",
+   "address": "823 Stub Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-07-13",
+   "price": 318900,
+   "qualified": false,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1930,
+    "lot_sqft": 7000,
+    "year_built": 1989,
+    "bedrooms": 2,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.67795,
+    "lon": -80.41837,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0016",
+   "address": "7798 Example St, Miami, FL (MOCK)",
+   "sale_date": "2025-02-14",
+   "price": 915500,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2500,
+    "lot_sqft": 8250,
+    "year_built": 1991,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.70251,
+    "lon": -80.41973,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0017",
+   "address": "809 Stub Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-10-01",
+   "price": 807000,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2490,
+    "lot_sqft": 5500,
+    "year_built": 1976,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.69227,
+    "lon": -80.39786,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0018",
+   "address": "2104 Sample St, Miami, FL (MOCK)",
+   "sale_date": "2024-11-11",
+   "price": 652000,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1900,
+    "lot_sqft": 7600,
+    "year_built": 1975,
+    "bedrooms": 4,
+    "bathrooms": 2.5,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.71628,
+    "lon": -80.40781,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0019",
+   "address": "315 Testing Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-12-08",
+   "price": 598100,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1620,
+    "lot_sqft": 8600,
+    "year_built": 1989,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.6971,
+    "lon": -80.38473,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0020",
+   "address": "7701 Testing St, Miami, FL (MOCK)",
+   "sale_date": "2024-10-31",
+   "price": 639200,
+   "qualified": false,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2490,
+    "lot_sqft": 8200,
+    "year_built": 1980,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.71302,
+    "lon": -80.40289,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0021",
+   "address": "6667 Stub Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-11-07",
+   "price": 569100,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1590,
+    "lot_sqft": 6800,
+    "year_built": 1975,
+    "bedrooms": 4,
+    "bathrooms": 2.0,
+    "pool": true,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.69273,
+    "lon": -80.40716,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0022",
+   "address": "7243 Fixture St, Miami, FL (MOCK)",
+   "sale_date": "2024-11-17",
+   "price": 638700,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 1780,
+    "lot_sqft": 8950,
+    "year_built": 1976,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.69527,
+    "lon": -80.41791,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4901-001-0023",
+   "address": "1991 Sample Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-06-21",
+   "price": 1003300,
+   "qualified": true,
+   "building": {
+    "use": "single_family",
+    "living_sqft": 2700,
+    "lot_sqft": 8400,
+    "year_built": 1987,
+    "bedrooms": 3,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.69837,
+    "lon": -80.43416,
+    "neighborhood": "Kendall Lakes (mock)",
+    "municipality": "Unincorporated Miami-Dade"
+   }
+  },
+  {
+   "folio": "30-4902-001-0000",
+   "address": "8745 Sample St, Miami, FL (MOCK)",
+   "sale_date": "2025-09-20",
+   "price": 490400,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 830,
+    "lot_sqft": 0,
+    "year_built": 2009,
+    "bedrooms": 3,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.77345,
+    "lon": -80.18487,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0001",
+   "address": "9175 Example Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-09-28",
+   "price": 521500,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 800,
+    "lot_sqft": 0,
+    "year_built": 2010,
+    "bedrooms": 1,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.75733,
+    "lon": -80.19093,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0002",
+   "address": "4006 Mockingbird St, Miami, FL (MOCK)",
+   "sale_date": "2024-10-12",
+   "price": 677800,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1140,
+    "lot_sqft": 0,
+    "year_built": 2012,
+    "bedrooms": 2,
+    "bathrooms": 2.5,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.75806,
+    "lon": -80.19423,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0003",
+   "address": "4690 Demo Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-11-27",
+   "price": 835100,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1310,
+    "lot_sqft": 0,
+    "year_built": 2016,
+    "bedrooms": 3,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.7584,
+    "lon": -80.20393,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0004",
+   "address": "8797 Example St, Miami, FL (MOCK)",
+   "sale_date": "2025-05-21",
+   "price": 485800,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 800,
+    "lot_sqft": 0,
+    "year_built": 2005,
+    "bedrooms": 1,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.74422,
+    "lon": -80.17531,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0005",
+   "address": "6443 Testing Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-07-05",
+   "price": 518200,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 820,
+    "lot_sqft": 0,
+    "year_built": 2008,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.77051,
+    "lon": -80.19388,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0006",
+   "address": "189 Sample St, Miami, FL (MOCK)",
+   "sale_date": "2025-07-11",
+   "price": 952500,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1480,
+    "lot_sqft": 0,
+    "year_built": 2016,
+    "bedrooms": 1,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.76542,
+    "lon": -80.18768,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0007",
+   "address": "6199 Example Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-06-25",
+   "price": 862400,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1400,
+    "lot_sqft": 0,
+    "year_built": 2009,
+    "bedrooms": 2,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.75714,
+    "lon": -80.17153,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0008",
+   "address": "156 Demo St, Miami, FL (MOCK)",
+   "sale_date": "2025-02-09",
+   "price": 675200,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1210,
+    "lot_sqft": 0,
+    "year_built": 2017,
+    "bedrooms": 3,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.73814,
+    "lon": -80.18491,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0009",
+   "address": "3760 Fixture Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-03-26",
+   "price": 736600,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1090,
+    "lot_sqft": 0,
+    "year_built": 2017,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.77853,
+    "lon": -80.20457,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0010",
+   "address": "8401 Fixture St, Miami, FL (MOCK)",
+   "sale_date": "2024-11-02",
+   "price": 529400,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 880,
+    "lot_sqft": 0,
+    "year_built": 2011,
+    "bedrooms": 2,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.75612,
+    "lon": -80.19161,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0011",
+   "address": "7687 Sample Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-06-02",
+   "price": 754500,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1110,
+    "lot_sqft": 0,
+    "year_built": 2020,
+    "bedrooms": 3,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.75182,
+    "lon": -80.20697,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0012",
+   "address": "1406 Fixture St, Miami, FL (MOCK)",
+   "sale_date": "2025-11-30",
+   "price": 496700,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 800,
+    "lot_sqft": 0,
+    "year_built": 2018,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.7637,
+    "lon": -80.17378,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0013",
+   "address": "9191 Example Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-11-14",
+   "price": 678100,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1190,
+    "lot_sqft": 0,
+    "year_built": 2005,
+    "bedrooms": 3,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.74564,
+    "lon": -80.18251,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0014",
+   "address": "632 Fixture St, Miami, FL (MOCK)",
+   "sale_date": "2025-08-20",
+   "price": 687700,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1170,
+    "lot_sqft": 0,
+    "year_built": 2014,
+    "bedrooms": 3,
+    "bathrooms": 2.5,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.75489,
+    "lon": -80.16988,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0015",
+   "address": "3942 Placeholder Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-07-24",
+   "price": 794800,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1390,
+    "lot_sqft": 0,
+    "year_built": 2013,
+    "bedrooms": 2,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.7782,
+    "lon": -80.18511,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0016",
+   "address": "3460 Testing St, Miami, FL (MOCK)",
+   "sale_date": "2025-03-02",
+   "price": 574400,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 910,
+    "lot_sqft": 0,
+    "year_built": 2020,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.76104,
+    "lon": -80.18073,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0017",
+   "address": "3494 Testing Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-09-24",
+   "price": 416200,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 720,
+    "lot_sqft": 0,
+    "year_built": 2007,
+    "bedrooms": 3,
+    "bathrooms": 1.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 2
+   },
+   "location": {
+    "lat": 25.74266,
+    "lon": -80.17822,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0018",
+   "address": "4647 Stub St, Miami, FL (MOCK)",
+   "sale_date": "2024-09-01",
+   "price": 556100,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 820,
+    "lot_sqft": 0,
+    "year_built": 2011,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.75174,
+    "lon": -80.21552,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0019",
+   "address": "9889 Testing Ave, Miami, FL (MOCK)",
+   "sale_date": "2024-07-05",
+   "price": 743600,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1180,
+    "lot_sqft": 0,
+    "year_built": 2015,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.73953,
+    "lon": -80.18329,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0020",
+   "address": "591 Placeholder St, Miami, FL (MOCK)",
+   "sale_date": "2025-05-18",
+   "price": 509000,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 830,
+    "lot_sqft": 0,
+    "year_built": 2007,
+    "bedrooms": 2,
+    "bathrooms": 3.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.77725,
+    "lon": -80.1819,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0021",
+   "address": "4590 Testing Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-06-29",
+   "price": 759800,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1150,
+    "lot_sqft": 0,
+    "year_built": 2019,
+    "bedrooms": 2,
+    "bathrooms": 2.5,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.7646,
+    "lon": -80.20671,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0022",
+   "address": "175 Stub St, Miami, FL (MOCK)",
+   "sale_date": "2025-12-07",
+   "price": 538000,
+   "qualified": false,
+   "building": {
+    "use": "condo",
+    "living_sqft": 1240,
+    "lot_sqft": 0,
+    "year_built": 2018,
+    "bedrooms": 2,
+    "bathrooms": 2.0,
+    "pool": false,
+    "waterfront": false,
+    "condition": 3
+   },
+   "location": {
+    "lat": 25.77965,
+    "lon": -80.1878,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  },
+  {
+   "folio": "30-4902-001-0023",
+   "address": "2584 Fixture Ave, Miami, FL (MOCK)",
+   "sale_date": "2025-04-28",
+   "price": 548600,
+   "qualified": true,
+   "building": {
+    "use": "condo",
+    "living_sqft": 770,
+    "lot_sqft": 0,
+    "year_built": 2018,
+    "bedrooms": 3,
+    "bathrooms": 2.5,
+    "pool": false,
+    "waterfront": false,
+    "condition": 4
+   },
+   "location": {
+    "lat": 25.76662,
+    "lon": -80.173,
+    "neighborhood": "Brickell (mock)",
+    "municipality": "City of Miami"
+   }
+  }
+ ],
+ "trim_notices": [
+  {
+   "folio": "30-4019-001-0100",
+   "tax_year": 2026,
+   "mailing_date": "2026-08-24",
+   "just_value": 655000,
+   "assessed_value": 655000,
+   "taxable_value": 605000,
+   "prior_assessed_value": 610000,
+   "total_millage": 18.9
+  },
+  {
+   "folio": "30-4139-002-0450",
+   "tax_year": 2026,
+   "mailing_date": "2026-08-24",
+   "just_value": 455000,
+   "assessed_value": 455000,
+   "taxable_value": 455000,
+   "prior_assessed_value": 440000,
+   "total_millage": 20.4
+  },
+  {
+   "folio": "30-5911-003-0780",
+   "tax_year": 2026,
+   "mailing_date": "2026-08-24",
+   "just_value": 640000,
+   "assessed_value": 330000,
+   "taxable_value": 280000,
+   "prior_assessed_value": 300000,
+   "total_millage": 18.9
+  },
+  {
+   "folio": "30-5911-003-0910",
+   "tax_year": 2026,
+   "mailing_date": "2026-08-24",
+   "just_value": 720000,
+   "assessed_value": 262650,
+   "taxable_value": 212650,
+   "prior_assessed_value": 255000,
+   "total_millage": 18.9
+  }
+ ]
+}
