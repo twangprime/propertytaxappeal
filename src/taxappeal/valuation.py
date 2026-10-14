@@ -15,6 +15,7 @@ from .models import (
     Building,
     CaseInput,
     Comparable,
+    Location,
     PropertyRecord,
     PropertyUse,
     Sale,
@@ -42,6 +43,12 @@ class AdjustmentRates:
     max_monthly_trend: float = 0.01
 
 
+def _distance(a: Location, b: Location) -> float | None:
+    if a.has_coords and b.has_coords:
+        return distance_mi(a.lat, a.lon, b.lat, b.lon)
+    return None
+
+
 def _months_between(earlier: date, later: date) -> float:
     return (later - earlier).days / 30.44
 
@@ -62,11 +69,15 @@ def _is_candidate(subject: Building, comp: Building) -> bool:
 def _similarity_score(subject: PropertyRecord, sale: Sale, valuation_date: date) -> float:
     """Lower is more similar."""
     s, c = subject.building, sale.building
-    score = distance_mi(subject.location.lat, subject.location.lon, sale.location.lat, sale.location.lon)
+    dist = _distance(subject.location, sale.location)
+    # Without coordinates the sales source already limited sales to the subject's neighborhood.
+    score = dist if dist is not None else 0.5
     score += 4 * abs(c.living_sqft - s.living_sqft) / s.living_sqft
     score += abs(c.year_built - s.year_built) / 15
     score += 0.5 * _months_between(sale.sale_date, valuation_date) / 18
-    score += 0.3 * (c.pool != s.pool) + 0.2 * abs(c.condition - s.condition)
+    if c.pool is not None and s.pool is not None:
+        score += 0.3 * (c.pool != s.pool)
+    score += 0.2 * abs(c.condition - s.condition)
     return score
 
 
@@ -111,11 +122,12 @@ def _adjust(
             f"{subject.lot_sqft - c.lot_sqft:+,} sqft at ${rates.lot_per_sqft}/sqft")
     add("Year built", (subject.year_built - c.year_built) * rates.per_year_built,
         f"{subject.year_built - c.year_built:+} years at ${rates.per_year_built:,}/year")
-    if subject.use != PropertyUse.CONDO and subject.pool != c.pool:
+    if subject.use != PropertyUse.CONDO and None not in (subject.pool, c.pool) and subject.pool != c.pool:
         add("Pool", rates.pool if subject.pool else -rates.pool,
             "Subject has a pool" if subject.pool else "Comparable has a pool; subject does not")
-    add("Bathrooms", (subject.bathrooms - c.bathrooms) * rates.per_bathroom,
-        f"{subject.bathrooms - c.bathrooms:+g} baths at ${rates.per_bathroom:,}")
+    if subject.bathrooms is not None and c.bathrooms is not None:
+        add("Bathrooms", (subject.bathrooms - c.bathrooms) * rates.per_bathroom,
+            f"{subject.bathrooms - c.bathrooms:+g} baths at ${rates.per_bathroom:,}")
     add("Condition", time_adjusted * rates.condition_pct_per_step * (subject_condition - c.condition),
         f"Subject condition {subject_condition} vs comparable {c.condition} (1-5 scale)")
     return adjustments
@@ -164,6 +176,12 @@ def _audits(
                 f"The property sold on {prop.last_sale_date:%B %d, %Y}, so the assessment cap reset "
                 f"and assessed value equals just value for {trim.tax_year}."
             ),
+        ))
+    elif trim.prior_assessed_value is None:
+        findings.append(AuditFinding(
+            code="cap_not_checked",
+            severity="info",
+            message="Last year's assessed value is unknown, so the assessment cap was not checked.",
         ))
     elif case.recent_improvements:
         findings.append(AuditFinding(
@@ -216,10 +234,8 @@ def value_property(
     valuation_date = date(trim.tax_year, 1, 1)
     start = valuation_date - timedelta(days=LOOKBACK_DAYS)
     end = valuation_date - timedelta(days=1)
-    lat, lon = prop.location.lat, prop.location.lon
-
     market = [
-        s for s in sales_source.find_sales(lat, lon, max(SEARCH_RADII_MI), start, end)
+        s for s in sales_source.find_sales(prop, max(SEARCH_RADII_MI), start, end)
         if s.qualified and s.building.use == prop.building.use and s.folio != prop.folio
     ]
     candidates: list[Sale] = []
@@ -227,7 +243,7 @@ def value_property(
         candidates = [
             s for s in market
             if _is_candidate(prop.building, s.building)
-            and distance_mi(lat, lon, s.location.lat, s.location.lon) <= radius
+            and (_distance(prop.location, s.location) or 0) <= radius
         ]
         if len(candidates) >= MAX_COMPS:
             break
@@ -250,10 +266,10 @@ def value_property(
         adjustments = _adjust(prop.building, sale, months, trend, area_rate, rates, subject_condition)
         net = sum(a.amount for a in adjustments)
         gross = sum(abs(a.amount) for a in adjustments)
-        dist = distance_mi(lat, lon, sale.location.lat, sale.location.lon)
+        dist = _distance(prop.location, sale.location)
         comps.append(Comparable(
             sale=sale,
-            distance_mi=round(dist, 2),
+            distance_mi=round(dist, 2) if dist is not None else None,
             months_before_valuation=round(months, 1),
             adjustments=adjustments,
             adjusted_price=int(round(sale.price + net, -2)),
@@ -261,7 +277,8 @@ def value_property(
             net_adjustment_pct=round(net / sale.price, 4),
             weight=0.0,
             selection_reason=(
-                f"Qualified sale {dist:.2f} mi away, {round(months)} month{'' if round(months) == 1 else 's'} before Jan 1, "
+                f"Qualified sale {f'{dist:.2f} mi away' if dist is not None else 'in the same neighborhood'}, "
+                f"{round(months)} month{'' if round(months) == 1 else 's'} before Jan 1, "
                 f"{sale.building.living_sqft:,} sqft built {sale.building.year_built}"
             ),
         ))

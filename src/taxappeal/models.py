@@ -23,18 +23,23 @@ class Building(BaseModel):
     living_sqft: int
     lot_sqft: int = 0  # 0 for condos
     year_built: int
-    bedrooms: int
-    bathrooms: float
-    pool: bool = False
+    bedrooms: int | None = None  # not in the DOR roll; None = unknown
+    bathrooms: float | None = None
+    pool: bool | None = None
     waterfront: bool = False
     condition: int = Field(3, ge=1, le=5, description="1=poor, 3=average, 5=excellent")
 
 
 class Location(BaseModel):
-    lat: float
-    lon: float
+    lat: float | None = None  # None when no parcel coordinates are loaded
+    lon: float | None = None
     neighborhood: str
     municipality: str
+    market_area: str = ""
+
+    @property
+    def has_coords(self) -> bool:
+        return self.lat is not None and self.lon is not None
 
 
 class Assessment(BaseModel):
@@ -81,8 +86,9 @@ class TrimNotice(BaseModel):
     just_value: int
     assessed_value: int
     taxable_value: int
-    prior_assessed_value: int
+    prior_assessed_value: int | None = None  # None = unknown; cap check is skipped
     total_millage: float = Field(description="Combined proposed millage (mills per $1,000)")
+    petition_deadline: date | None = Field(None, description="Deadline printed on the notice, if any")
 
 
 class Owner(BaseModel):
@@ -110,6 +116,10 @@ class CaseInput(BaseModel):
     recent_improvements: bool = Field(
         False, description="New construction/additions since last year (explains cap overages)"
     )
+    trim_notice: TrimNotice | None = Field(
+        None, description="Owner-confirmed TRIM values; takes precedence over the TRIM connector"
+    )
+    trim_notice_path: str | None = Field(None, description="Uploaded TRIM notice file for OCR")
 
 
 # --- Valuation output -----------------------------------------------------------------
@@ -123,7 +133,7 @@ class Adjustment(BaseModel):
 
 class Comparable(BaseModel):
     sale: Sale
-    distance_mi: float
+    distance_mi: float | None  # None when coordinates are unavailable
     months_before_valuation: float
     adjustments: list[Adjustment]
     adjusted_price: int
@@ -203,3 +213,4 @@ class Packet(BaseModel):
     narrative: Narrative
     petition_fields: dict[str, str]
     data_sources: dict[str, str]
+    warnings: list[str] = Field(default_factory=list, description="Data issues the owner should review")

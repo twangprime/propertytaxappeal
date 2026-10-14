@@ -53,8 +53,8 @@
     <tr><td>Living area</td><td>{{ "{:,}".format(b.living_sqft) }} sqft</td></tr>
     {% if b.lot_sqft %}<tr><td>Lot size</td><td>{{ "{:,}".format(b.lot_sqft) }} sqft</td></tr>{% endif %}
     <tr><td>Year built</td><td>{{ b.year_built }}</td></tr>
-    <tr><td>Bedrooms / bathrooms</td><td>{{ b.bedrooms }} / {{ b.bathrooms|round(1) }}</td></tr>
-    <tr><td>Pool</td><td>{{ "Yes" if b.pool else "No" }}</td></tr>
+    {% if b.bedrooms is not none and b.bathrooms is not none %}<tr><td>Bedrooms / bathrooms</td><td>{{ b.bedrooms }} / {{ b.bathrooms|round(1) }}</td></tr>{% endif %}
+    {% if b.pool is not none %}<tr><td>Pool</td><td>{{ "Yes" if b.pool else "No" }}</td></tr>{% endif %}
     <tr><td>Condition (1–5)</td><td>{{ b.condition }}</td></tr>
     <tr><td>Homestead</td><td>{{ "Yes" if p.property.homestead else "No" }}</td></tr>
   </table>
@@ -78,12 +78,12 @@
     <tr><td>Folio</td><td>{{ p.property.folio }}</td>{% for c in v.comps %}<td>{{ c.sale.folio }}</td>{% endfor %}</tr>
     <tr><td>Sale date</td><td>—</td>{% for c in v.comps %}<td>{{ c.sale.sale_date.strftime("%m/%d/%Y") }}</td>{% endfor %}</tr>
     <tr><td>Sale price</td><td>—</td>{% for c in v.comps %}<td class="num">{{ c.sale.price|money }}</td>{% endfor %}</tr>
-    <tr><td>Distance</td><td>—</td>{% for c in v.comps %}<td class="num">{{ c.distance_mi }} mi</td>{% endfor %}</tr>
+    <tr><td>Distance</td><td>—</td>{% for c in v.comps %}<td class="num">{{ "%s mi"|format(c.distance_mi) if c.distance_mi is not none else "Same nbhd." }}</td>{% endfor %}</tr>
     <tr><td>Living sqft</td><td class="num">{{ "{:,}".format(b.living_sqft) }}</td>{% for c in v.comps %}<td class="num">{{ "{:,}".format(c.sale.building.living_sqft) }}</td>{% endfor %}</tr>
     {% if b.lot_sqft %}<tr><td>Lot sqft</td><td class="num">{{ "{:,}".format(b.lot_sqft) }}</td>{% for c in v.comps %}<td class="num">{{ "{:,}".format(c.sale.building.lot_sqft) }}</td>{% endfor %}</tr>{% endif %}
     <tr><td>Year built</td><td class="num">{{ b.year_built }}</td>{% for c in v.comps %}<td class="num">{{ c.sale.building.year_built }}</td>{% endfor %}</tr>
-    <tr><td>Bed / bath</td><td class="num">{{ b.bedrooms }} / {{ b.bathrooms }}</td>{% for c in v.comps %}<td class="num">{{ c.sale.building.bedrooms }} / {{ c.sale.building.bathrooms }}</td>{% endfor %}</tr>
-    {% if b.use.value != "condo" %}<tr><td>Pool</td><td>{{ "Yes" if b.pool else "No" }}</td>{% for c in v.comps %}<td>{{ "Yes" if c.sale.building.pool else "No" }}</td>{% endfor %}</tr>{% endif %}
+    {% if b.bedrooms is not none %}<tr><td>Bed / bath</td><td class="num">{{ b.bedrooms }} / {{ b.bathrooms }}</td>{% for c in v.comps %}<td class="num">{{ c.sale.building.bedrooms if c.sale.building.bedrooms is not none else "—" }} / {{ c.sale.building.bathrooms if c.sale.building.bathrooms is not none else "—" }}</td>{% endfor %}</tr>{% endif %}
+    {% if b.use.value != "condo" and b.pool is not none %}<tr><td>Pool</td><td>{{ "Yes" if b.pool else "No" }}</td>{% for c in v.comps %}<td>{{ {True: "Yes", False: "No"}.get(c.sale.building.pool, "—") }}</td>{% endfor %}</tr>{% endif %}
     <tr><td>Condition</td><td class="num">{{ b.condition }}</td>{% for c in v.comps %}<td class="num">{{ c.sale.building.condition }}</td>{% endfor %}</tr>
     <tr><th colspan="{{ v.comps|length + 2 }}">Adjustments</th></tr>
     {% for f in factors %}
@@ -108,6 +108,7 @@
 {# ---------- Exhibit C ---------- #}
 <section class="page">
   <h2>Exhibit C – Location of Comparable Sales</h2>
+  {% if map_points %}
   <svg viewBox="0 0 320 320" width="320" height="320" role="img" aria-label="Relative location of subject and comparable sales" style="border:0.5pt solid #d5dae0">
     {% for pt in map_points %}
       {% if pt.label == "S" %}
@@ -120,6 +121,9 @@
     {% endfor %}
   </svg>
   <p class="muted" style="font-size:9pt">S = subject. Numbers match the comparable columns in Exhibit B. North is up; schematic, not to a street map.</p>
+  {% else %}
+  <p class="muted" style="font-size:9pt">All comparables are in the subject's Property Appraiser neighborhood. Parcel coordinates were not available for a map.</p>
+  {% endif %}
   <table>
     <tr><th>Comp</th><th>Why selected</th></tr>
     {% for c in v.comps %}<tr><td>{{ loop.index }}</td><td>{{ p.narrative.comp_explanations[c.sale.folio] }}</td></tr>{% endfor %}

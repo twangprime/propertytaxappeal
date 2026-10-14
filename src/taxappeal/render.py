@@ -32,6 +32,8 @@ def _map_points(packet: Packet, size: int = 320, pad: int = 28) -> list[dict]:
     pts = [("S", packet.property.location.lat, packet.property.location.lon)]
     pts += [(str(i + 1), c.sale.location.lat, c.sale.location.lon)
             for i, c in enumerate(packet.valuation.comps)]
+    if any(lat is None or lon is None for _, lat, lon in pts):
+        return []
     lats, lons = [p[1] for p in pts], [p[2] for p in pts]
     clat, clon = (max(lats) + min(lats)) / 2, (max(lons) + min(lons)) / 2
     lon_factor = math.cos(math.radians(clat))  # a degree of longitude is shorter than one of latitude

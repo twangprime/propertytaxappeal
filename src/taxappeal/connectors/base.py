@@ -31,8 +31,10 @@ class SalesSource(Protocol):
     name: str
 
     def find_sales(
-        self, near_lat: float, near_lon: float, radius_mi: float, start: date, end: date
-    ) -> list[Sale]: ...
+        self, subject: PropertyRecord, radius_mi: float, start: date, end: date
+    ) -> list[Sale]:
+        """Sales near the subject. Without coordinates, sales in the subject's neighborhood."""
+        ...
 
 
 class TrimNoticeSource(Protocol):
@@ -40,7 +42,7 @@ class TrimNoticeSource(Protocol):
 
     name: str
 
-    def get_trim_notice(self, folio: str, tax_year: int) -> TrimNotice: ...
+    def get_trim_notice(self, case: CaseInput) -> TrimNotice: ...
 
 
 class NarrativeWriter(Protocol):

@@ -1,6 +1,8 @@
 """Connector registry. Pick an implementation per connector by name, e.g.
 
-    build_connectors(property_records="mock", sales="dor_sdf")
+    build_connectors(property_records="dor", sales="dor", trim_notices="ocr")
+
+or set TAXAPPEAL_CONNECTORS="property_records=dor,sales=dor,trim_notices=ocr".
 
 Register a new implementation by adding a factory to the matching dict below.
 """
@@ -8,6 +10,7 @@ Register a new implementation by adding a factory to the matching dict below.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import os
 from typing import Callable
 
 from .base import NarrativeWriter, PropertyRecordSource, SalesSource, TrimNoticeSource
@@ -30,12 +33,42 @@ class Connectors:
         }
 
 
+def _dor_records():
+    from .dor import DorPropertyRecords
+
+    return DorPropertyRecords()
+
+
+def _dor_sales():
+    from .dor import DorSales
+
+    return DorSales()
+
+
+def _ocr_trim():
+    from .ocr import OcrTrimNotices
+
+    return OcrTrimNotices()
+
+
 REGISTRY: dict[str, dict[str, Callable[[], object]]] = {
-    "property_records": {"mock": MockPropertyRecords},
-    "sales": {"mock": MockSales},
-    "trim_notices": {"mock": MockTrimNotices},
-    "narrative": {"mock": MockNarrativeWriter},
+    "property_records": {"mock": MockPropertyRecords, "dor": _dor_records},
+    "sales": {"mock": MockSales, "dor": _dor_sales},
+    "trim_notices": {"mock": MockTrimNotices, "ocr": _ocr_trim},
+    "narrative": {"mock": MockNarrativeWriter, "template": MockNarrativeWriter},
 }
+
+
+def choices_from_env(env: str | None = None) -> dict[str, str]:
+    """Parse TAXAPPEAL_CONNECTORS, e.g. "property_records=dor,sales=dor"."""
+    raw = os.environ.get("TAXAPPEAL_CONNECTORS", "") if env is None else env
+    choices = {}
+    for item in filter(None, (part.strip() for part in raw.split(","))):
+        kind, _, impl = item.partition("=")
+        if not impl:
+            raise ValueError(f"Bad TAXAPPEAL_CONNECTORS entry {item!r}; expected kind=implementation")
+        choices[kind.strip()] = impl.strip()
+    return choices
 
 
 def build_connectors(**choices: str) -> Connectors:

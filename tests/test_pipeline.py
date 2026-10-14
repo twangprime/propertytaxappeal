@@ -76,7 +76,7 @@ def test_narrative_grounding_rejects_invented_figures(connectors):
 
 def test_deadlines_relative_to_hearing():
     case = load_case("strong_case.json")
-    trim = build_connectors().trim_notices.get_trim_notice(case.folio, 2026)
+    trim = build_connectors().trim_notices.get_trim_notice(case)
     deadlines = {d.name: d for d in build_deadlines(case, trim, rules_for(2026))}
     assert deadlines["Send your evidence to the Property Appraiser"].due == date(2026, 11, 3)
     assert deadlines["Pay at least 75% of taxes"].due == date(2027, 3, 31)
@@ -96,8 +96,8 @@ def test_connector_can_be_swapped_independently():
     class OnlyRecentSales(MockSales):
         name = "test double"
 
-        def find_sales(self, near_lat, near_lon, radius_mi, start, end):
-            return super().find_sales(near_lat, near_lon, radius_mi, date(2025, 7, 1), end)
+        def find_sales(self, subject, radius_mi, start, end):
+            return super().find_sales(subject, radius_mi, date(2025, 7, 1), end)
 
     base = build_connectors()
     swapped = Connectors(base.property_records, OnlyRecentSales(), base.trim_notices, base.narrative)

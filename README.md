@@ -54,22 +54,46 @@ CaseInput ─▶ PropertyRecordSource ─┐
 - **Deterministic math.** All figures come from `valuation.py` and `decision.py`. The narrative layer only writes prose. `narrative.check_numbers_grounded` rejects any packet whose text cites a dollar figure that isn't in the valuation or decision data, so an LLM writer can't make numbers up.
 - **Per-year rules** (deadlines, fees, cap rates, form version) live in `rules.py`, not in code paths.
 
-## Replacing mock connectors
+## Data connectors
 
-Each external dependency is a `Protocol` in `src/taxappeal/connectors/base.py`. To replace one:
+Each external dependency is a `Protocol` in `src/taxappeal/connectors/base.py`, chosen per run with command-line flags or `TAXAPPEAL_CONNECTORS`:
 
-1. Implement the protocol in a new module, e.g. `connectors/dor_sdf.py`.
-2. Register it in `REGISTRY` in `connectors/__init__.py`, e.g. `"sales": {"mock": MockSales, "dor_sdf": DorSdfSales}`.
-3. Select it per run: `taxappeal generate case.json --sales dor_sdf`. The other connectors stay on mock.
-
-| Connector | Mock today | Planned real implementation |
+| Connector | Implementations | Status |
 |---|---|---|
-| `sales` (`SalesSource`) | Fictional sales | FL DOR Sale Data File (SDF) joined to the NAL roll, loaded into DuckDB |
-| `property_records` (`PropertyRecordSource`) | Fictional parcels | Miami-Dade Property Appraiser data, plus Miami-Dade GIS for coordinates |
-| `trim_notices` (`TrimNoticeSource`) | Fictional notices | OCR of the owner's uploaded TRIM notice (Claude vision), checked against the PA record |
-| `narrative` (`NarrativeWriter`) | Template text | Claude, constrained to the `ValuationResult`. Must pass the grounding check |
+| `property_records` | `mock`, **`dor`** (FL DOR NAL roll) | Real data available |
+| `sales` | `mock`, **`dor`** (FL DOR Sale Data File) | Real data available |
+| `trim_notices` | `mock`, **`ocr`** (Claude reads the owner's TRIM notice) | Real; owner confirms the values |
+| `narrative` | `template` | Template text. A Claude writer is planned and must pass the grounding check |
 
-Suggested order: **sales**, then **property records**, then **TRIM OCR**, then **narrative**. The first two decide valuation quality. The last two are convenience.
+See [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) for field mappings and caveats.
+
+### Using the state roll (`dor`)
+
+1. Download Miami-Dade's (county 23) **NAL** and **SDF** CSV files from the [FL DOR data portal](https://floridarevenue.com/property/Pages/DataPortal_RequestAssessmentRollGISData.aspx). Use the preliminary roll (July) for the current TRIM year.
+2. Optional but recommended: a CSV of parcel coordinates (folio, latitude, longitude in WGS84), for example exported from Miami-Dade's GIS property point layer. Without it, comparable sales come from the subject's DOR neighborhood code instead of a distance search.
+3. Build the local index (one time per roll):
+   ```bash
+   taxappeal import-dor --nal NAL23F202601.csv --sdf SDF23F202601.csv --coords parcel_points.csv
+   ```
+   This writes `data/dor.sqlite` (override with `--db` or `TAXAPPEAL_DOR_DB`). The importer checks the column headers and names any that are missing.
+4. Use it:
+   ```bash
+   taxappeal generate case.json --property-records dor --sales dor
+   TAXAPPEAL_CONNECTORS="property_records=dor,sales=dor,trim_notices=ocr" taxappeal serve
+   ```
+
+To try this without downloading anything, `examples/dor_sample/` holds small DOR-format files built from the fictional mock data. Run `python tests/dor_fixture.py examples/dor_sample` to regenerate them.
+
+### Reading the TRIM notice (`ocr`)
+
+```bash
+pip install -e '.[ocr]'
+export ANTHROPIC_API_KEY=...              # or `ant auth login`
+taxappeal ocr samples/sample_trim_notice.pdf          # prints the values it read
+taxappeal generate case.json --property-records dor --sales dor --trim-notice notice.pdf
+```
+
+In the web UI, the owner uploads the notice and clicks **Read my notice**. The values are filled into the form for the owner to check before building. The owner can also type the values in, which works without an API key. The folio read from the notice is cross-checked against the property, and differences from the roll are listed under "Please double-check".
 
 ## Not yet built
 

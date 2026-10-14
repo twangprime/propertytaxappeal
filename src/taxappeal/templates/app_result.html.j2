@@ -22,6 +22,13 @@
     <p class="muted" style="font-size:13px">Case strength: <strong>{{ v.confidence }}</strong> · based on {{ v.comps|length }} comparable sales.</p>
   </section>
 
+  {% if p.warnings %}
+  <section class="card">
+    <h2>Please double-check</h2>
+    <ul>{% for w in p.warnings %}<li class="issue">{{ w }}</li>{% endfor %}</ul>
+  </section>
+  {% endif %}
+
   <section class="card">
     <h2>Your documents</h2>
     <div class="actions">
@@ -48,7 +55,7 @@
     <table>
       <tr><th>Address</th><th>Sold</th><th class="num">Price</th><th class="num">Adjusted</th><th class="num">Distance</th></tr>
       {% for c in v.comps %}
-      <tr><td>{{ c.sale.address }}</td><td>{{ c.sale.sale_date.strftime("%m/%d/%Y") }}</td><td class="num">{{ c.sale.price|money }}</td><td class="num">{{ c.adjusted_price|money }}</td><td class="num">{{ c.distance_mi }} mi</td></tr>
+      <tr><td>{{ c.sale.address }}</td><td>{{ c.sale.sale_date.strftime("%m/%d/%Y") }}</td><td class="num">{{ c.sale.price|money }}</td><td class="num">{{ c.adjusted_price|money }}</td><td class="num">{{ "%s mi"|format(c.distance_mi) if c.distance_mi is not none else "Same nbhd." }}</td></tr>
       {% endfor %}
     </table>
     </div>
@@ -60,7 +67,7 @@
   </section>
 
   <p><a class="btn secondary" href="/">Start another</a></p>
-  <p class="muted" style="font-size:12px">Automated estimate based on mock data. Not legal advice or a licensed appraisal.</p>
+  <p class="muted" style="font-size:12px">Automated estimate{{ " based on mock data" if is_mock }}. Not legal advice or a licensed appraisal.</p>
 </main>
 </body>
 </html>

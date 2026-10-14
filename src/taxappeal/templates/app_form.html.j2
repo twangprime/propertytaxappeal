@@ -10,24 +10,44 @@
 <main>
   <h1>Build your appeal packet</h1>
   <p class="muted">Enter your property and we'll check whether an appeal is worth it, then build the evidence packet and a step-by-step guide.</p>
-  <div class="mock"><strong>Mock data:</strong> only the 4 fictional properties below are available until real data sources are connected.</div>
+  {% if mock_mode %}<div class="mock"><strong>Mock data:</strong> only the 4 fictional properties listed are available. Start the server with <code>TAXAPPEAL_CONNECTORS=property_records=dor,sales=dor</code> to use the state roll.</div>{% endif %}
   {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  {% if notice %}<p class="mock">{{ notice }}</p>{% endif %}
 
-  <form method="post" action="/generate">
-    <input type="hidden" name="tax_year" value="2026">
+  <form method="post" action="/generate" enctype="multipart/form-data">
+    <input type="hidden" name="tax_year" value="{{ v('tax_year', '2026') }}">
+    <input type="hidden" name="trim_folio" value="{{ v('trim_folio') }}">
     <section class="card">
       <h2>1. Your property</h2>
-      <label for="folio">Property (folio number)</label>
-      <select id="folio" name="folio" required>
-        {% for folio, address in folios %}
-        <option value="{{ folio }}" data-address="{{ address.replace(' (MOCK)', '') }}" {{ "selected" if v("folio") == folio }}>{{ folio }} · {{ address }}</option>
-        {% endfor %}
-      </select>
-      <p class="muted" style="font-size:13px;margin:6px 0 0">Your folio number is on your TRIM notice ("Notice of Proposed Property Taxes"). Tax year 2026.</p>
+      <label for="folio">Folio number</label>
+      <input id="folio" name="folio" type="text" required list="folio-list" placeholder="e.g. 30-4019-001-0100" value="{{ v('folio') }}" autocomplete="off">
+      <datalist id="folio-list">
+        {% for folio, address in folios %}<option value="{{ folio }}">{{ address }}</option>{% endfor %}
+      </datalist>
+      <p class="muted" style="font-size:13px;margin:6px 0 0">Your folio number is on your TRIM notice ("Notice of Proposed Property Taxes") and on the Property Appraiser's website.</p>
     </section>
 
     <section class="card">
-      <h2>2. About you</h2>
+      <h2>2. Your TRIM notice</h2>
+      <p class="muted" style="font-size:13px;margin-top:0">Upload a PDF or photo and we'll read the values for you, or type them in.{% if not trim_required %} (Optional with mock data.){% endif %}</p>
+      <div class="upload">
+        <input type="file" name="trim_file" id="trim_file" accept="application/pdf,image/*" aria-label="TRIM notice file">
+        <button type="submit" class="secondary" formaction="/extract" formnovalidate>Read my notice</button>
+      </div>
+      {% if ocr_notes %}<ul class="muted" style="font-size:13px">{% for n in ocr_notes %}<li>{{ n }}</li>{% endfor %}</ul>{% endif %}
+      <div class="grid" style="margin-top:14px">
+        <div><label for="trim_just_value">Market (just) value, this year</label><input id="trim_just_value" name="trim_just_value" type="text" inputmode="numeric" value="{{ v('trim_just_value') }}"></div>
+        <div><label for="trim_assessed_value">Assessed value, this year</label><input id="trim_assessed_value" name="trim_assessed_value" type="text" inputmode="numeric" value="{{ v('trim_assessed_value') }}"></div>
+        <div><label for="trim_taxable_value">Taxable value, this year</label><input id="trim_taxable_value" name="trim_taxable_value" type="text" inputmode="numeric" value="{{ v('trim_taxable_value') }}"></div>
+        <div><label for="trim_prior_assessed_value">Assessed value, last year</label><input id="trim_prior_assessed_value" name="trim_prior_assessed_value" type="text" inputmode="numeric" value="{{ v('trim_prior_assessed_value') }}"></div>
+        <div><label for="trim_total_millage">Total proposed millage</label><input id="trim_total_millage" name="trim_total_millage" type="text" inputmode="decimal" placeholder="e.g. 18.9" value="{{ v('trim_total_millage') }}"></div>
+        <div><label for="trim_mailing_date">Date mailed</label><input id="trim_mailing_date" name="trim_mailing_date" type="date" value="{{ v('trim_mailing_date') }}"></div>
+        <div><label for="trim_petition_deadline">Petition deadline on the notice</label><input id="trim_petition_deadline" name="trim_petition_deadline" type="date" value="{{ v('trim_petition_deadline') }}"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. About you</h2>
       <div class="grid">
         <div><label for="owner_name">Owner name</label><input id="owner_name" name="owner_name" type="text" required value="{{ v('owner_name') }}"></div>
         <div><label for="email">Email</label><input id="email" name="email" type="email" value="{{ v('email') }}"></div>
@@ -37,7 +57,7 @@
     </section>
 
     <section class="card">
-      <h2>3. Where you are in the process</h2>
+      <h2>4. Where you are in the process</h2>
       <div class="grid">
         <label class="check full"><input type="checkbox" name="petition_filed" id="petition_filed" {{ "checked" if checked("petition_filed") }}> I've already filed my petition with the Value Adjustment Board</label>
         <div><label for="hearing_date">Hearing date (if scheduled)</label><input id="hearing_date" name="hearing_date" type="date" value="{{ v('hearing_date') }}"></div>
@@ -45,7 +65,7 @@
     </section>
 
     <section class="card">
-      <h2>4. Condition problems (optional)</h2>
+      <h2>5. Condition problems (optional)</h2>
       <p class="muted" style="font-size:13px;margin-top:0">Repairs the home needed on January 1, such as a failing roof or plumbing. Contractor estimates make the strongest evidence.</p>
       <div id="repairs">
         {% for desc, amount, source in repairs or [("", "", "")] %}
@@ -62,18 +82,20 @@
     </section>
 
     <section class="card">
-      <label class="check"><input type="checkbox" name="pdf" checked> Also create printable PDFs (takes a few seconds)</label>
+      <label class="check"><input type="checkbox" name="pdf" {{ "checked" if checked("pdf") or not v("folio") }}> Also create printable PDFs (takes a few seconds)</label>
       <div style="margin-top:12px"><button class="primary" type="submit">Build my packet</button></div>
+      <p class="muted" style="font-size:12px;margin-bottom:0">Data sources: {% for k, s in sources.items() %}{{ k.replace("_", " ") }}: {{ s }}{{ "; " if not loop.last }}{% endfor %}</p>
     </section>
   </form>
 </main>
 <script>
+  const folios = {{ dict(folios)|tojson }};
   const folio = document.getElementById("folio"), mail = document.getElementById("mailing_address");
   let autofilled = !mail.value;
-  function fillAddress() { if (autofilled) mail.value = folio.selectedOptions[0].dataset.address; }
   mail.addEventListener("input", () => { autofilled = false; });
-  folio.addEventListener("change", fillAddress);
-  fillAddress();
+  folio.addEventListener("input", () => {
+    if (autofilled && folios[folio.value]) mail.value = folios[folio.value].replace(" (MOCK)", "");
+  });
   function addRepair() {
     const rows = document.getElementById("repairs"), row = rows.firstElementChild.cloneNode(true);
     row.querySelectorAll("input").forEach(i => i.value = "");

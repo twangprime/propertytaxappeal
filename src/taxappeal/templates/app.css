@@ -45,3 +45,5 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   .grid, .stats { grid-template-columns: 1fr; }
   .repair { grid-template-columns: 1fr 1fr; }
 }
+.upload { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+input[type=file] { font: inherit; max-width: 100%; }

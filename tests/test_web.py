@@ -41,3 +41,56 @@ def test_generate_and_render_result(tmp_path):
 def test_form_page_lists_mock_folios(tmp_path):
     page = App(tmp_path).form_page(error="oops")
     assert "30-5911-003-0780" in page and "oops" in page
+
+
+def test_manual_trim_values_become_owner_confirmed_notice():
+    case = case_from_form(form(trim_just_value=["$660,000"], trim_assessed_value=["655,000"],
+                               trim_taxable_value=["605000"], trim_total_millage=["18.9"],
+                               trim_prior_assessed_value=[""], trim_petition_deadline=["2026-09-18"]))
+    assert case.trim_notice.just_value == 660000 and case.trim_notice.prior_assessed_value is None
+    assert str(case.trim_notice.petition_deadline) == "2026-09-18"
+
+
+def test_partial_trim_values_rejected():
+    with pytest.raises(ValueError, match="assessed value"):
+        case_from_form(form(trim_just_value=["660000"]))
+
+
+def test_multipart_parsing():
+    from taxappeal.web import parse_body
+
+    boundary = "XyZ"
+    body = (
+        f"--{boundary}\r\nContent-Disposition: form-data; name=\"folio\"\r\n\r\n30-4019-001-0100\r\n"
+        f"--{boundary}\r\nContent-Disposition: form-data; name=\"trim_file\"; filename=\"n.pdf\"\r\n"
+        f"Content-Type: application/pdf\r\n\r\n%PDF-1.4 data\r\n--{boundary}--\r\n"
+    ).encode()
+    fields, files = parse_body(f"multipart/form-data; boundary={boundary}", body)
+    assert fields["folio"] == ["30-4019-001-0100"]
+    assert files["trim_file"] == ("n.pdf", "application/pdf", b"%PDF-1.4 data")
+
+
+def test_extract_prefills_form_for_confirmation(tmp_path):
+    from test_ocr import GOOD, reader
+
+    r, _ = reader(GOOD)
+    app = App(tmp_path, trim_reader=r)
+    page = app.extract_trim(form(), {"trim_file": ("n.pdf", "application/pdf", b"%PDF")})
+    assert 'value="655000"' in page and "Check each one" in page and "Summed 9 authorities." in page
+    assert 'name="trim_folio" value="30-4019-001-0100"' in page
+
+
+def test_extract_failure_falls_back_to_manual_entry(tmp_path):
+    class Broken:
+        def extract(self, data, media_type):
+            raise RuntimeError("no API key")
+
+    page = App(tmp_path, trim_reader=Broken()).extract_trim(form(), {"trim_file": ("n.pdf", "application/pdf", b"x")})
+    assert "type the values" in page and "no API key" in page
+
+
+def test_generate_with_confirmed_trim_for_wrong_property_is_rejected(tmp_path):
+    bad = form(trim_folio=["30-9999-999-9999"], trim_just_value=["1"], trim_assessed_value=["1"],
+               trim_taxable_value=["1"], trim_total_millage=["18"])
+    with pytest.raises(ValueError, match="TRIM notice is for folio"):
+        App(tmp_path).generate(bad, pdf=False)

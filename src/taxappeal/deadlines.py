@@ -9,7 +9,7 @@ from .rules import TaxYearRules
 
 
 def build_deadlines(case: CaseInput, trim: TrimNotice, rules: TaxYearRules) -> list[Deadline]:
-    petition_due = rules.petition_deadline or trim.mailing_date + timedelta(days=25)
+    petition_due = trim.petition_deadline or rules.petition_deadline or trim.mailing_date + timedelta(days=25)
     items = [] if case.petition_filed else [
         Deadline(
             name="Informal review with the Property Appraiser (optional)",

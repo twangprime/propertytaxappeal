@@ -24,6 +24,11 @@
   </div>
   <p class="muted" style="font-size:9pt">Savings estimate uses the combined proposed millage on your TRIM notice ({{ p.trim.total_millage }} mills) and ignores differences in how school-district levies treat some exemptions. Case strength: <strong>{{ v.confidence }}</strong> ({{ v.comps|length }} comparable sales; adjusted prices vary {{ v.coefficient_of_variation|pct(1) }}).</p>
 
+  {% if p.warnings %}
+  <h2>Please double-check</h2>
+  <ul>{% for w in p.warnings %}<li class="issue">{{ w }}</li>{% endfor %}</ul>
+  {% endif %}
+
   <h2>Key dates</h2>
   <table>
     <tr><th>Date</th><th>What</th><th>Details</th></tr>

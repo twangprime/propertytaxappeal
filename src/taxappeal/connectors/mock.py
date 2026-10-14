@@ -8,7 +8,7 @@ from functools import lru_cache
 from importlib import resources
 
 from ..geo import distance_mi
-from ..models import PropertyRecord, Sale, TrimNotice
+from ..models import CaseInput, PropertyRecord, Sale, TrimNotice
 from ..narrative import TemplateNarrativeWriter
 
 
@@ -35,26 +35,27 @@ class MockSales:
     name = "mock (fictional DOR SDF sales)"
 
     def find_sales(
-        self, near_lat: float, near_lon: float, radius_mi: float, start: date, end: date
+        self, subject: PropertyRecord, radius_mi: float, start: date, end: date
     ) -> list[Sale]:
+        here = subject.location
         sales = [Sale.model_validate(s) for s in _data()["sales"]]
         return [
             s
             for s in sales
             if start <= s.sale_date <= end
-            and distance_mi(near_lat, near_lon, s.location.lat, s.location.lon) <= radius_mi
+            and distance_mi(here.lat, here.lon, s.location.lat, s.location.lon) <= radius_mi
         ]
 
 
 class MockTrimNotices:
     name = "mock (fictional TRIM notices)"
 
-    def get_trim_notice(self, folio: str, tax_year: int) -> TrimNotice:
+    def get_trim_notice(self, case: CaseInput) -> TrimNotice:
         for t in _data()["trim_notices"]:
-            if t["folio"] == folio and t["tax_year"] == tax_year:
+            if t["folio"] == case.folio and t["tax_year"] == case.tax_year:
                 return TrimNotice.model_validate(t)
-        raise LookupError(f"No {tax_year} TRIM notice for folio {folio}")
+        raise LookupError(f"No {case.tax_year} TRIM notice for folio {case.folio}")
 
 
 class MockNarrativeWriter(TemplateNarrativeWriter):
-    name = "mock (template narrative, no LLM)"
+    name = "template text (no LLM)"
